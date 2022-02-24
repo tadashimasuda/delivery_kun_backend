@@ -20,11 +20,13 @@ class CreateUsersTable extends Migration
             $table->string('google_id')->nullable();
             $table->string('password')->nullable();
             $table->string('email')->unique()->nullable();
-            $table->integer('prefecture_id');
+            $table->bigInteger('prefecture_id');
             $table->integer('vehicle_model');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('prefecture_id')->references('id')->on('prefecture');
         });
     }
 
