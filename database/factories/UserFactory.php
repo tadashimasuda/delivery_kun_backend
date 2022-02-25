@@ -16,9 +16,11 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
+            'img_path' => 'https://media.istockphoto.com/vectors/user-avatar-profile-icon-black-vector-illustration-vector-id1209654046',
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'vehicle_model' => $this->faker->numberBetween(1,3),
             'remember_token' => Str::random(10),
         ];
     }
