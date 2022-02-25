@@ -3,18 +3,21 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
+use Illuminate\Support\Facades\Artisan;
 
 class UserTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseMigrations;
 
     public function setup(): void
     {
         parent::setUp();
-        $this->artisan('db:seed',['--class' => 'TestDataSeeder']);
+        $this->artisan('db:seed', ['--class' => 'TestDataSeeder']);
+        Artisan::call('passport:install');
     }
 
     /**
@@ -23,7 +26,7 @@ class UserTest extends TestCase
     public function api_registerにPOSTでアクセスできる()
     {
         $response = $this->post('/api/register');
-        $response -> assertStatus(200);
+        $response->assertStatus(201);
     }
 
     /**
@@ -32,17 +35,32 @@ class UserTest extends TestCase
     public function api_registerにPOSTでアクセスするとJSONが返却()
     {
         $response = $this->post('/api/register');
-        $this->assertThat($response->content(),$this->isJson());
+        $this->assertThat($response->content(), $this->isJson());
     }
 
     /**
      *  @test
      */
-    public function api_registerにPOSTでアクセスすると要件通りに返却()
+    public function api_registerにPOSTでアクセスするとユーザが新規作成される()
     {
-        $response = $this->post('/api/register');
-        $users = $response->json();
-        $user = $users[0];
-        $this->assertSame(['id','name','email','prefecture_id','vehicle_model'],array_keys($user));
+        $request_body = [
+            'email' => 'samplea@gmail.com',
+            'password' => 'password',
+            'password_confirmation' => 'password'
+        ];
+
+        $response = $this->post('api/register', $request_body);
+        $response->assertStatus(201)
+            ->assertJsonStructure(
+                [
+                    "data" => [
+                        'id',
+                        'name',
+                        'email',
+                        'vehicle_model',
+                        'access_token',
+                    ]
+                ]
+            );
     }
 }
