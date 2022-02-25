@@ -30,6 +30,6 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        return 'success';
+        return \response()->json();
     }
 }

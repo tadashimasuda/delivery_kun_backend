@@ -30,7 +30,7 @@ class UserTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password'
         ];
-        $response = $this->post('/api/register',$request_body);
+        $response = $this->post('/api/register', $request_body);
         $response->assertStatus(201);
     }
 
@@ -44,7 +44,7 @@ class UserTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password'
         ];
-        $response = $this->post('/api/register',$request_body);
+        $response = $this->post('/api/register', $request_body);
         $this->assertThat($response->content(), $this->isJson());
     }
 
@@ -81,5 +81,18 @@ class UserTest extends TestCase
     {
         $response = $this->post('/api/login');
         $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function api_loginにPOSTでアクセスするとJSONが返却()
+    {
+        $request_body = [
+            'email' => 'samplea@gmail.com',
+            'password' => 'password',
+        ];
+        $response = $this->post('/api/login', $request_body);
+        $this->assertThat($response->content(), $this->isJson());
     }
 }
