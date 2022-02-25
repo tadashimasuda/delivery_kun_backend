@@ -27,4 +27,9 @@ class UserController extends Controller
 
         return new UserResource($user);
     }
+
+    public function login(Request $request)
+    {
+        return 'success';
+    }
 }
