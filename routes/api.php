@@ -18,4 +18,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', function (){});
+Route::post('/register', function (){
+    return response()->json(\App\Models\User::query()->select(['id','name','email','prefecture_id','vehicle_model'])->get());
+});
