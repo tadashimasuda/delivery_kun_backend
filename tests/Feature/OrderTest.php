@@ -14,42 +14,41 @@ class OrderTest extends TestCase
 {
     // use RefreshDatabase;
     use DatabaseMigrations;
+    /**
+     * @test
+     */
+    public function api_orderにPOSTでアクセスできる()
+    {
+        $user = $this->signIn();
+
+        $reqest_body = [
+            'earnings_incentive' => 2.0
+        ];
+
+        $response = $this->json('POST', 'api/order', $reqest_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(201);
+    }
 
     /**
      * @test
      */
-    // public function api_orderにPOSTでアクセスできる()
-    // {
-    //     $user = $this->signIn();
+    public function api_orderにPOSTでデータが追加できる()
+    {
+        $user = $this->signIn();
 
-    //     $reqest_body = [
-    //         'earnings_incentive' => 2.0
-    //     ];
+        $reqest_body = [
+            'earnings_incentive' => 2.0
+        ];
 
-    //     $response = $this->json('POST', 'api/order', $reqest_body, [
-    //         'Accept' => 'application/json',
-    //         'Authorization' => 'Bearer ' . $user['access_token']
-    //     ]);
-    //     $response->assertStatus(201);
-    // }
-
-    // /**
-    //  * @test
-    //  */
-    // public function api_orderにPOSTでデータが追加できる()
-    // {
-    //     $user = $this->signIn();
-
-    //     $reqest_body = [
-    //         'earnings_incentive' => 2.0
-    //     ];
-
-    //     $response = $this->json('POST', 'api/order', $reqest_body, [
-    //         'Accept' => 'application/json',
-    //         'Authorization' => 'Bearer ' . $user['access_token']
-    //     ]);
-    //     $response->assertStatus(201);
-    // }
+        $response = $this->json('POST', 'api/order', $reqest_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(201);
+    }
 
     /**
      * @test
