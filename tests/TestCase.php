@@ -29,6 +29,7 @@ abstract class TestCase extends BaseTestCase
             'vehicle_model' => 0
         ]);
         $token = $user->createToken('access_token')->accessToken;
-        return $token;
+        $user['access_token'] = $token;
+        return $user;
     }
 }
