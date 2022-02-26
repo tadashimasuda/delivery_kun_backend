@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Passport\Passport;
 
 class UserTest extends TestCase
 {
@@ -21,6 +22,19 @@ class UserTest extends TestCase
         parent::setUp();
         $this->artisan('db:seed', ['--class' => 'TestDataSeeder']);
         Artisan::call('passport:install');
+    }
+
+    public function signIn($user = null)
+    {
+        $user = User::factory()->create([
+            'name' => 'sampleUser',
+            'email' => 'sampleTaro@test.com',
+            'password' =>  bcrypt('password'),
+            'prefecture_id' => 1,
+            'vehicle_model' => 0
+        ]);
+        $token = $user->createToken('access_token')->accessToken;
+        return $token;
     }
 
     /**
@@ -146,9 +160,23 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    public function api_logoutにアクセスできる()
-    {   
-        $this->json('POST', 'api/logout', ['Accept' => 'application/json'])
-        ->assertStatus(200);
+    // public function api_logoutにアクセスできる()
+    // {   
+    //     $this->json('POST', 'api/logout', [],['Accept' => 'application/json'])
+    //     ->assertStatus(200);
+    // }
+
+    /**
+     * @test
+     */
+    public function api_logoutでログアウトできる()
+    {
+        $token = $this->signIn();
+
+        $response = $this->json('POST', 'api/logout', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ]);
+        $response->assertOk();
     }
 }
