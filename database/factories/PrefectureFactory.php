@@ -16,6 +16,7 @@ class PrefectureFactory extends Factory
     {
         return [
             'prefecture' => Faker\Factory::create('ja_JP')->unique()->prefecture(),
+            'earnings_base' => Faker\Factory::create()->randomElement(['715', '615', '515'])
         ];
     }
 }

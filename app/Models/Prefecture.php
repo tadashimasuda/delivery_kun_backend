@@ -20,8 +20,24 @@ class Prefecture extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'id',
+        'prefecture',
+        'prefecture_id',
+    ];
+
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    public function demaecan_orders()
+    {
+        return $this->hasMany(OrderDemaecan::class);
     }
 }

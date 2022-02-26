@@ -19,7 +19,7 @@ class CreateOrderDemaecansTable extends Migration
             $table->unsignedBigInteger('prefecture_id');
             $table->float('earnings_incentive');
             $table->float('earnings_base');
-            $table->integer('earnings_total');
+            $table->float('earnings_total');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

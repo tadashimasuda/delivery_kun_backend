@@ -21,10 +21,33 @@ class OrderTest extends TestCase
     {
         $token = $this->signIn();
 
-        $response = $this->json('POST', 'api/order', [], [
+        $reqest_body = [
+            'earnings_incentive' => 2.0
+        ];
+
+        $response = $this->json('POST', 'api/order', $reqest_body, [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $token
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(201);
+    }
+
+    /**
+     * @test
+     */
+
+    public function api_orderにPOSTでデータが追加できる()
+    {
+        $token = $this->signIn();
+
+        $reqest_body = [
+            'earnings_incentive' => 2.0
+        ];
+
+        $response = $this->json('POST', 'api/order', $reqest_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ]);
+        $response->assertStatus(201);
     }
 }
