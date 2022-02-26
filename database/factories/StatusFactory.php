@@ -3,9 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Faker;
 
-class PrefectureFactory extends Factory
+class StatusFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -15,8 +14,7 @@ class PrefectureFactory extends Factory
     public function definition()
     {
         return [
-            'prefecture' => Faker\Factory::create('ja_JP')->unique()->prefecture(),
-            'earnings_base' => Faker\Factory::create()->randomElement(['715', '615', '515'])
+            //
         ];
     }
 }

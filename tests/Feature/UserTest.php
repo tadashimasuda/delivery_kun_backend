@@ -9,33 +9,12 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabaseState;
-use Illuminate\Support\Facades\Artisan;
 use Laravel\Passport\Passport;
 
 class UserTest extends TestCase
 {
     use DatabaseMigrations;
     // use RefreshDatabase;
-
-    public function setup(): void
-    {
-        parent::setUp();
-        $this->artisan('db:seed', ['--class' => 'TestDataSeeder']);
-        Artisan::call('passport:install');
-    }
-
-    public function signIn($user = null)
-    {
-        $user = User::factory()->create([
-            'name' => 'sampleUser',
-            'email' => 'sampleTaro@test.com',
-            'password' =>  bcrypt('password'),
-            'prefecture_id' => 1,
-            'vehicle_model' => 0
-        ]);
-        $token = $user->createToken('access_token')->accessToken;
-        return $token;
-    }
 
     /**
      *  @test

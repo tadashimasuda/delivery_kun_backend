@@ -16,6 +16,7 @@ class CreatePrefecturesTable extends Migration
         Schema::create('prefectures', function (Blueprint $table) {
             $table->id();
             $table->string('prefecture');
+            $table->integer('earnings_base');
             $table->timestamps();
         });
     }

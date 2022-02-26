@@ -15,10 +15,11 @@ class TestDataSeeder extends Seeder
      */
     public function run()
     {
-        Prefecture::factory()->count(2)->create()->each(function ($prefecture) {
-            User::factory()->count(2)->make()->each(function($user) use ($prefecture){
-                $prefecture->users()->save($user);
-            });
+        Prefecture::factory()->count(30)->create()->each(
+            function ($prefecture) {
+                User::factory()->count(30)->make()->each(function ($user) use ($prefecture) {
+                    $prefecture->users()->save($user);
+                });
             }
         );
     }
