@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Prefecture;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Artisan;
 class UserTest extends TestCase
 {
     use DatabaseMigrations;
+    // use RefreshDatabase;
 
     public function setup(): void
     {
@@ -25,7 +28,12 @@ class UserTest extends TestCase
      */
     public function api_registerにPOSTでアクセスできる()
     {
-        $response = $this->post('/api/register');
+        $request_body = [
+            'email' => 'sample@gmail.com',
+            'password' => 'password',
+            'password_confirmation' => 'password'
+        ];
+        $response = $this->json('POST', 'api/register', $request_body, ['Accept' => 'application/json']);
         $response->assertStatus(201);
     }
 
@@ -34,7 +42,12 @@ class UserTest extends TestCase
      */
     public function api_registerにPOSTでアクセスするとJSONが返却()
     {
-        $response = $this->post('/api/register');
+        $request_body = [
+            'email' => 'sample@gmail.com',
+            'password' => 'password',
+            'password_confirmation' => 'password'
+        ];
+        $response = $this->json('POST', 'api/register', $request_body, ['Accept' => 'application/json']);
         $this->assertThat($response->content(), $this->isJson());
     }
 
@@ -44,13 +57,79 @@ class UserTest extends TestCase
     public function api_registerにPOSTでアクセスするとユーザが新規作成される()
     {
         $request_body = [
-            'email' => 'samplea@gmail.com',
+            'email' => 'sample@gmail.com',
             'password' => 'password',
             'password_confirmation' => 'password'
         ];
 
-        $response = $this->post('api/register', $request_body);
-        $response->assertStatus(201)
+        $this->json('POST', 'api/register', $request_body, ['Accept' => 'application/json'])
+            ->assertStatus(201)
+            ->assertJsonStructure([
+                "data" => [
+                    'id',
+                    'name',
+                    'email',
+                    'vehicle_model',
+                    'access_token',
+                ]
+            ]);
+    }
+
+    /**
+     *  @test
+     */
+    public function api_loginにPOSTでアクセスできる()
+    {
+        User::factory()->create([
+            'name' => 'sampleUser',
+            'email' => 'sample@gmail.com',
+            'password' =>  bcrypt('password'),
+            'prefecture_id' => 1,
+            'vehicle_model' => 0
+        ]);
+
+        $request_body = [
+            'email' => 'sample@gmail.com',
+            'password' => 'password',
+        ];
+        $this->json('POST', 'api/login', $request_body, ['Accept' => 'application/json'])
+            ->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function api_loginにPOSTでアクセスするとJSONが返却()
+    {
+
+        $request_body = [
+            'email' => 'sample@gmail.com',
+            'password' => 'password',
+        ];
+        $response = $this->json('POST', 'api/login', $request_body, ['Accept' => 'application/json']);
+        $this->assertThat($response->content(), $this->isJson());
+    }
+
+    /**
+     * @test
+     */
+    public function api_loginにアクセスするとログインできる()
+    {
+        User::factory()->create([
+            'name' => 'sampleUser',
+            'email' => 'sample@gmail.com',
+            'password' =>  bcrypt('password'),
+            'prefecture_id' => 1,
+            'vehicle_model' => 0
+        ]);
+
+        $request_body = [
+            'email' => 'sample@gmail.com',
+            'password' => 'password',
+        ];
+
+        $this->json('POST', 'api/login', $request_body, ['Accept' => 'application/json'])
+            ->assertStatus(200)
             ->assertJsonStructure(
                 [
                     "data" => [
