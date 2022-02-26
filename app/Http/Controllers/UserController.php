@@ -45,4 +45,14 @@ class UserController extends Controller
             'message' => '認証に失敗しました。'
         ], 401);
     }
+
+    public function logout(Request $request)
+    {
+        $token = $request->user()->token();
+        $token->revoke();
+        
+        return \response()->json(
+            ['message' => 'success']
+        );
+    }
 }
