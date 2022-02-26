@@ -51,4 +51,9 @@ class OrderController extends Controller
             'message' => 'success',
         ], 201);
     }
+
+    public function index(Request $request)
+    {
+        
+    }
 }

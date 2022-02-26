@@ -85,4 +85,18 @@ class OrderTest extends TestCase
             'user_id' => $user->id,
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function api_orderでGETでアクセスできる()
+    {
+        $user = $this->signIn();
+
+        $response = $this->json('GET', 'api/order', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(200);
+    }
 }
