@@ -45,4 +45,9 @@ class UserController extends Controller
             'message' => '認証に失敗しました。'
         ], 401);
     }
+
+    public function logout()
+    {
+        return 'success';
+    }
 }
