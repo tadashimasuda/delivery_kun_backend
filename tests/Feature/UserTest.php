@@ -160,11 +160,16 @@ class UserTest extends TestCase
     /**
      * @test
      */
-    // public function api_logoutにアクセスできる()
-    // {   
-    //     $this->json('POST', 'api/logout', [],['Accept' => 'application/json'])
-    //     ->assertStatus(200);
-    // }
+    public function api_logoutにアクセスできる()
+    {
+        $token = $this->signIn();
+
+        $this->json('POST', 'api/logout', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ])
+            ->assertStatus(200);
+    }
 
     /**
      * @test
