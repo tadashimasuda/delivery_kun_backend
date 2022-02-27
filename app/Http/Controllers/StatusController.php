@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class StatusController extends Controller
 {
-    public function update($request,$earnings_total)
+    public function update($request, $earnings_total)
     {
         $today = Carbon::today();
         Status::where('user_id', $request->user()->id)->whereDate('created_at', $today)->update([
@@ -25,13 +25,20 @@ class StatusController extends Controller
         return DB::table('statuses')->where('user_id', $user_id)->whereDate('created_at', $today)->exists();
     }
 
-    public function store($request,$earnings_total,$prefecture_id)
+    public function store($request, $earnings_total, $prefecture_id)
     {
         Status::create([
             'user_id' => $request->user()->id,
             'days_earnings_total' => $earnings_total,
             'days_earnings_qty' => 1,
             'prefecture_id' => $prefecture_id
+        ]);
+    }
+
+    public function index(Request $request)
+    {
+        return response()->json([
+            'message' => 'success'
         ]);
     }
 }
