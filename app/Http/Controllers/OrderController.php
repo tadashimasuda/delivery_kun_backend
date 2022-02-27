@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderResource;
 use App\Models\OrderDemaecan;
 use App\Models\Prefecture;
 use App\Models\User;
@@ -10,6 +11,17 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+
+    public function date_format($date)
+    {
+        $date_split_y = substr($date,0,4);
+        $date_split_m = substr($date,4,2);
+        $date_split_d = substr($date,6,2);
+
+        $format_day = $date_split_y .'-'. $date_split_m .'-'.$date_split_d;
+
+        return $format_day;
+    }
     public function store(Request $request)
     {
         $user = User::with('prefecture')->find($request->user()->id);
@@ -54,6 +66,21 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
+        $date = $request->query('date');
+
+        if (!$date) {
+            return \response()->json([
+                'message' => 'InvalidQueryParameterValue'
+            ],400);
+        }
+
+        $date_format = $this->date_format($date);
         
+        $user_id = $request->user()->id;
+        $orders = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date_format)->get();
+
+        return OrderResource::collection($orders);
     }
+
+    
 }

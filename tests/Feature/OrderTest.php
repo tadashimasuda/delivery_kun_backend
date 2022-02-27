@@ -99,4 +99,18 @@ class OrderTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
+
+    /**
+     * @test
+     */
+    public function api_orderでGETでクエリなしで401エラー()
+    {
+        $user = $this->signIn();
+
+        $response = $this->json('GET', 'api/order', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(400);
+    }
 }
