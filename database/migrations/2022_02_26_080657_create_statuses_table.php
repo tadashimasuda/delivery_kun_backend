@@ -21,7 +21,7 @@ class CreateStatusesTable extends Migration
             $table->integer('days_earnings_qty')->default(0);
             $table->unsignedBigInteger('prefecture_id');
             $table->timestamps();
-            $table->timestamp('finish_at')->default(DB::raw('CURRENT_TIMESTAMP'));;
+            $table->timestamp('finish_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('prefecture_id')->references('id')->on('prefectures');
