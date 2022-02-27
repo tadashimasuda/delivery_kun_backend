@@ -25,4 +25,7 @@ Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware('auth:api')->post('/logout',[UserController::class,'logout']);
 
-Route::middleware('auth:api')->post('/order',[OrderController::class,'store']);
+Route::prefix('order')->group(function(){
+    Route::middleware('auth:api')->post('/',[OrderController::class,'store']);
+    Route::middleware('auth:api')->get('/',[OrderController::class,'index']);
+});

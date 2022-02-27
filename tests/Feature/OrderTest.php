@@ -85,4 +85,62 @@ class OrderTest extends TestCase
             'user_id' => $user->id,
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function api_orderでGETでアクセスできる()
+    {
+        $user = $this->signIn();
+
+        $response = $this->json('GET', 'api/order', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function api_orderでGETでクエリなしで401エラー()
+    {
+        $user = $this->signIn();
+
+        $response = $this->json('GET', 'api/order', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(400);
+    }
+
+    /**
+     * @test
+     */
+    public function api_orderでGETでクエリありのアクセスでレスポンス()
+    {
+        $user = $this->signIn();
+
+        $response = $this->json('GET', 'api/order?date=20220226', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(200)
+            ->assertJsonStructure(
+                [
+                    "data" => [
+                        '*' =>[
+                            'id',
+                            'user_id',
+                            'prefecture_id',
+                            'earnings_incentive',
+                            'earnings_base',
+                            'earnings_total',
+                            'created_at',
+                            'updated_at'
+                        ]
+                    ]
+                ]
+            );
+    }
 }
