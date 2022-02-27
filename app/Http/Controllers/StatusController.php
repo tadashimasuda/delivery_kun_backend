@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StatusRequest;
+use App\Http\Resources\StatusResource;
 use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -9,6 +11,17 @@ use Illuminate\Support\Facades\DB;
 
 class StatusController extends Controller
 {
+    public function date_format($date)
+    {
+        $date_split_y = substr($date, 0, 4);
+        $date_split_m = substr($date, 4, 2);
+        $date_split_d = substr($date, 6, 2);
+
+        $format_day = $date_split_y . '-' . $date_split_m . '-' . $date_split_d;
+
+        return $format_day;
+    }
+
     public function update($request, $earnings_total)
     {
         $today = Carbon::today();
@@ -35,10 +48,15 @@ class StatusController extends Controller
         ]);
     }
 
-    public function index(Request $request)
+    public function index(StatusRequest $request)
     {
-        return response()->json([
-            'message' => 'success'
-        ]);
+        $date = $request->query('date');
+        $user_id = $request->query('user_id');
+
+        $date_format = $this->date_format($date);
+
+        $status = Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->first();
+
+        return new StatusResource($status);
     }
 }

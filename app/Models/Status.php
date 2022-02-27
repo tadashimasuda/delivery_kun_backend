@@ -9,6 +9,8 @@ class Status extends Model
 {
     use HasFactory;
 
+    protected $dates = ['finish_at'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -23,4 +25,9 @@ class Status extends Model
         'prefecture_id',
         'finish_at'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

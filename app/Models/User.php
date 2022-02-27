@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Prefecture::class);
     }
+
+    public function status()
+    {
+        return $this->hasMany(Status::class);
+    }
 }
