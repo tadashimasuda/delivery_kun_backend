@@ -55,4 +55,9 @@ class UserController extends Controller
             ['message' => 'success']
         );
     }
+
+    public function user(Request $request)
+    {
+        return new UserResource($request->user());
+    }
 }
