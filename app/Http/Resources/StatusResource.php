@@ -48,7 +48,8 @@ class StatusResource extends JsonResource
                 'daysEarningsTotal' => $this->days_earnings_total,
                 'actualCost' => $this->actual_cost,
                 'daysEarningsQty' => $this->days_earnings_qty
-            ]
+            ],
+            'chartData' => ChartDataResource::collection($this->chart_data)
         ];
     }
 }

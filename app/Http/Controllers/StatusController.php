@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StatusRequest;
 use App\Http\Resources\StatusResource;
+use App\Models\OrderDemaecan;
 use App\Models\Status;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -54,9 +55,17 @@ class StatusController extends Controller
         $user_id = $request->query('user_id');
 
         $date_format = $this->date_format($date);
-
-        $status = Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->first();
-
-        return new StatusResource($status);
+        
+        if(Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->exists()){
+            $status = Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->first();
+        
+            $chart_data = OrderDemaecan::select(DB::raw('hour(created_at) as hour'), DB::raw('COUNT(id) as count'))
+            ->groupBy(DB::raw('created_at'))
+            ->get();
+            $status['chart_data'] = $chart_data;
+            return new StatusResource($status);
+        }else{
+            return \response([],204);
+        }
     }
 }
