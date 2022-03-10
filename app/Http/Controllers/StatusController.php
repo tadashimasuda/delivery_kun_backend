@@ -55,8 +55,12 @@ class StatusController extends Controller
 
         $date_format = $this->date_format($date);
 
-        $status = Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->first();
+        if(Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->exists()){
+            $status = Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->first();
+            return new StatusResource($status);
+        }else{
+            return \response([],204);
+        }
 
-        return new StatusResource($status);
     }
 }
