@@ -27,4 +27,9 @@ class OrderDemaecan extends Model
     {
         return $this->belongsTo(Prefecture::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
