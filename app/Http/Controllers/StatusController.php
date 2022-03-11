@@ -59,10 +59,10 @@ class StatusController extends Controller
         if(Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->exists()){
             $status = Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->first();
         
-            $chart_data = OrderDemaecan::select(DB::raw('hour(created_at) as hour'), DB::raw('COUNT(id) as count'))
-            ->groupBy(DB::raw('created_at'))
-            ->get();
+            $chart_data = OrderDemaecan::select(DB::raw('hour(created_at) as hour'), DB::raw('COUNT(id) as count'))->whereDate('created_at', '=', $date_format)->groupby('hour')->get();
+
             $status['chart_data'] = $chart_data;
+
             return new StatusResource($status);
         }else{
             return \response([],204);
