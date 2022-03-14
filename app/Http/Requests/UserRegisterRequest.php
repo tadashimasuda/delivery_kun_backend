@@ -22,6 +22,7 @@ class UserRegisterRequest extends FormRequest
             'email.required' => 'メールアドレスを入力してください。',
             'email.email' => 'メールアドレスの形式で入力してください。',
             'email.unique' => 'このメールアドレスはすでに使用されています。',
+            'name.required' => '名前が入力されていません。',
             'password.required' => 'パスワードを入力してください。',
             'password.confirmed' => 'パスワードが一致しません。',
             'password_confirmation.required' => '確認用パスワードを入力してください'
@@ -37,6 +38,7 @@ class UserRegisterRequest extends FormRequest
     {
         return [
             'email' => 'required|email|unique:users',
+            'name' => 'required',
             'password' => 'required|confirmed',
             'password_confirmation' => 'required'
         ];

@@ -71,6 +71,31 @@ class UserTest extends TestCase
     /**
      *  @test
      */
+    public function api_registerにPOSTでアクセスするとユーザが新規作成される_名前も対応される()
+    {
+        $request_body = [
+            'name' => 'username',
+            'email' => 'sample@gmail.com',
+            'password' => 'password',
+            'password_confirmation' => 'password'
+        ];
+
+        $this->json('POST', 'api/register', $request_body, ['Accept' => 'application/json'])
+            ->assertStatus(201)
+            ->assertJsonStructure([
+                "data" => [
+                    'id',
+                    'name',
+                    'email',
+                    'vehicle_model',
+                    'access_token',
+                ]
+            ]);
+    }
+
+    /**
+     *  @test
+     */
     public function api_loginにPOSTでアクセスできる()
     {
         User::factory()->create([
