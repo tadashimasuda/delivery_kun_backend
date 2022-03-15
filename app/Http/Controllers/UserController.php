@@ -58,6 +58,12 @@ class UserController extends Controller
 
     public function user(Request $request)
     {
-        return new UserResource($request->user());
+        $access_token = $request->header('Authorization');
+        $replace_access_token = str_replace('Bearer ', '', $access_token);
+
+        $user = $request->user();
+        $user['access_token'] = $replace_access_token;
+
+        return new UserResource($user);
     }
 }
