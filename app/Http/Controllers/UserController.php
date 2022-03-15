@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use Exception;
 
 class UserController extends Controller
 {
@@ -65,5 +66,24 @@ class UserController extends Controller
         $user['access_token'] = $replace_access_token;
 
         return new UserResource($user);
+    }
+
+    public function update(UserUpdateRequest $request)
+    {
+        $user_id = $request->user()->id;
+        $user = User::find($user_id);
+
+        try{
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'vehicle_model' => $request->vehicleModelId,
+                'prefecture_id' => $request->prefectureId
+            ]);
+
+            return \response()->json(['message'=>'success'],201);
+        }catch(Exception $e){
+            return \response()->json(['message'=>$e->getMessage()],500);
+        }
     }
 }

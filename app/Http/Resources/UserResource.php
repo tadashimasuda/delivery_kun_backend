@@ -7,18 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
-    public function vehicleModel($model_id)
-    {
-        // if ($model_id == 0) {
-        //     return '車';
-        // } elseif ($model_id == 1) {
-        //     return 'バイク';
-        // } elseif ($model_id == 2) {
-        //     return '自転車';
-        // } else {
-        //     return '徒歩';
-        // }
-    }
     /**
      * Transform the resource into an array.
      *
