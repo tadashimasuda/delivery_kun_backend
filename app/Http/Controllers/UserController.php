@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -65,5 +66,10 @@ class UserController extends Controller
         $user['access_token'] = $replace_access_token;
 
         return new UserResource($user);
+    }
+
+    public function update(UserUpdateRequest $request)
+    {
+        return 'as';
     }
 }
