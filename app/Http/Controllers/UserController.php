@@ -8,7 +8,7 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
-
+use Exception;
 
 class UserController extends Controller
 {
@@ -70,6 +70,20 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request)
     {
-        return 'as';
+        $user_id = $request->user()->id;
+        $user = User::find($user_id);
+
+        try{
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'vehicle_model' => $request->vehicleModelId,
+                'prefecture_id' => $request->prefectureId
+            ]);
+
+            return \response()->json(['message'=>'success'],201);
+        }catch(Exception $e){
+            return \response()->json(['message'=>$e->getMessage()],500);
+        }
     }
 }
