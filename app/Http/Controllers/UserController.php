@@ -9,6 +9,8 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User as ProviderUser;
 
 class UserController extends Controller
 {
@@ -84,6 +86,49 @@ class UserController extends Controller
             return \response()->json(['message'=>'success'],201);
         }catch(Exception $e){
             return \response()->json(['message'=>$e->getMessage()],500);
+        }
+    }
+
+    public function getGoogleAuth(Request $request)
+    {
+        $access_token = $request->accessToken;
+
+        try {
+            $providerUser = Socialite::driver('google')->userFromToken($access_token);
+        } catch (Exception $e) {
+            return $e;
+        }
+
+        if($providerUser){
+            return $this->googleAcountFindOrCreate($providerUser);
+        }
+    }
+
+    public function googleAcountFindOrCreate(ProviderUser $providerUser)
+    {
+        $is_googleAccount = User::where('google_id',$providerUser->getId())->first();
+        $google_id = $providerUser->getId();
+
+        if(! $is_googleAccount){
+
+            $user = User::create([
+                'name' => $providerUser->getName(),
+                'email' => $providerUser->getEmail(),
+                'google_id' => $google_id,
+                'vehicle_model' => 1,
+                'prefecture_id' =>1,
+            ]);
+
+            $access_token = $user->createToken('access_token')->accessToken;
+            
+            $user['access_token'] = $access_token;
+            
+            return new UserResource($user);
+        }else{
+            $access_token = $is_googleAccount->createToken('access_token')->accessToken;
+            $is_googleAccount['access_token'] = $access_token;
+
+            return new UserResource($is_googleAccount);
         }
     }
 }
