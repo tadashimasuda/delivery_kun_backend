@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StatusRequest;
+use App\Http\Requests\UpdateActualCostRequest;
 use App\Http\Resources\StatusResource;
 use App\Models\OrderDemaecan;
 use App\Models\Status;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -67,5 +69,23 @@ class StatusController extends Controller
         }else{
             return \response([],204);
         }
+    }
+
+    public function updateActualCost(UpdateActualCostRequest $request)
+    {
+        $user_id = $request->user()->id;
+        $date = $this->date_format($request->query('date'));
+
+        $user_status = Status::where('user_id',$user_id)->whereDate('created_at', '=', $date)->first();
+
+        $this->authorize('update', $user_status);
+
+        $user_status->update([
+            'actual_cost' => $request->actual_cost
+        ]);
+
+        return \response()->json([
+            'message' => 'success'
+        ],201);
     }
 }
