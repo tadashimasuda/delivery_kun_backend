@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
+Route::post('/google/auth/login', [UserController::class, 'getGoogleAuth']);
+
 Route::prefix('user')->group(function () {
     Route::middleware('auth:api')->patch('/update', [UserController::class, 'update']);
     Route::middleware('auth:api')->get('/', [UserController::class, 'user']);
