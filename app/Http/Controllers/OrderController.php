@@ -82,5 +82,10 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
-    
+    public function show(Request $request)
+    {
+        $order_id = $request->id;
+        $order = OrderDemaecan::find($order_id);
+        return new OrderResource($order);
+    }
 }
