@@ -19,13 +19,7 @@ class StatusResource extends JsonResource
             return '徒歩';
         }
     }
-    public function deffOnlineTime($start_time, $finish_time)
-    {
-        $start_time = new Carbon($start_time);
-        $finish_time = new Carbon($finish_time);
-        $diff_time = $start_time->diff($finish_time);
-        return $diff_time->format("%h時間%i分");
-    }
+    
     /**
      * Transform the resource into an array.
      *
@@ -44,7 +38,7 @@ class StatusResource extends JsonResource
             'summary' => [
                 'startTime' => $this->created_at->format('Y/m/d H:i:s'),
                 'endTime' => $this->finish_at->format('Y/m/d H:i:s'),
-                'onlineTime' => $this->deffOnlineTime($this->created_at, $this->finish_at),
+                'onlineTime' => $this->online_time,
                 'daysEarningsTotal' => $this->days_earnings_total,
                 'actualCost' => $this->actual_cost,
                 'daysEarningsQty' => $this->days_earnings_qty
