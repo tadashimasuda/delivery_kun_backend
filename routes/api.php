@@ -40,3 +40,4 @@ Route::prefix('order')->group(function () {
 });
 
 Route::get('/status', [StatusController::class, 'index']);
+Route::middleware('auth:api')->patch('/actual_cost', [StatusController::class, 'updateActualCost']);

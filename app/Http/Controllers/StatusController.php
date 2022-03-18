@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StatusRequest;
+use App\Http\Requests\UpdateActualCostRequest;
 use App\Http\Resources\StatusResource;
 use App\Models\OrderDemaecan;
 use App\Models\Status;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class StatusController extends Controller
@@ -61,11 +61,61 @@ class StatusController extends Controller
         
             $chart_data = OrderDemaecan::select(DB::raw('hour(created_at) as hour'), DB::raw('COUNT(id) as count'))->whereDate('created_at', '=', $date_format)->groupby('hour')->get();
 
-            $status['chart_data'] = $chart_data;
+            $created_at = $status->created_at;
+            
+            if($this->isToday($created_at)){
+                $start_time = new Carbon($created_at);
+                $currnet_time = Carbon::now();
+                
+                $diff_time = $start_time->diff($currnet_time);
+                $online_time = $diff_time->format("%h時間%i分");
+            }else{
+                $online_time = $this->deffOnlineTime($status->created_at, $status->finish_at);
+            }
 
+            $status['chart_data'] = $chart_data;
+            $status['online_time'] = $online_time;
+ 
             return new StatusResource($status);
         }else{
             return \response([],204);
         }
+    }
+
+    public function deffOnlineTime($start_time, $finish_time)
+    {
+        $start_time = new Carbon($start_time);
+        $finish_time = new Carbon($finish_time);
+        $diff_time = $start_time->diff($finish_time);
+        return $diff_time->format("%h時間%i分");
+    }
+
+    public function isToday($date)
+    {
+        $created_at = new Carbon($date);
+
+        if($created_at->isToday()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function updateActualCost(UpdateActualCostRequest $request)
+    {
+        $user_id = $request->user()->id;
+        $date = $this->date_format($request->query('date'));
+
+        $user_status = Status::where('user_id',$user_id)->whereDate('created_at', '=', $date)->first();
+
+        $this->authorize('update', $user_status);
+
+        $user_status->update([
+            'actual_cost' => $request->actual_cost
+        ]);
+
+        return \response()->json([
+            'message' => 'success'
+        ],201);
     }
 }
