@@ -93,6 +93,8 @@ class OrderController extends Controller
 
     public function update(OrderUpdateRequest $request)
     {
+        
+
         $user_id = $request->user()->id;
         $order_id = $request->id;
         $earnings_base = $request->earnings_base;
@@ -100,11 +102,14 @@ class OrderController extends Controller
         $earnings_total = $earnings_base * $earnings_incentive;
         $update_created_at = new Carbon($request->update_date_time);
         
+        $order = OrderDemaecan::find($order_id);
+
+        $this->authorize('update', $order);
+
+        $created_at = $order->created_at;
         $status_controller = app()->make('App\Http\Controllers\StatusController');
 
-        DB::transaction(function () use($order_id,$earnings_incentive,$earnings_base,$earnings_total,$update_created_at,$user_id,$status_controller) {
-            $order = OrderDemaecan::find($order_id);
-            $created_at = $order->created_at;
+        DB::transaction(function () use($order_id,$created_at,$earnings_incentive,$earnings_base,$earnings_total,$update_created_at,$user_id,$status_controller) {
             
             OrderDemaecan::find($order_id)->update([
                 'earnings_base' => $earnings_base,
