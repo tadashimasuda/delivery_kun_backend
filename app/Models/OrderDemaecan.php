@@ -21,6 +21,7 @@ class OrderDemaecan extends Model
         'earnings_base',
         'earnings_total',
         'prefecture_id',
+        'order_received_at'
     ];
 
     public function prefecture()

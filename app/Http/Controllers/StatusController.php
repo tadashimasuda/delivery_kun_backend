@@ -59,7 +59,7 @@ class StatusController extends Controller
         if(Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->exists()){
             $status = Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->first();
         
-            $chart_data = OrderDemaecan::select(DB::raw('hour(created_at) as hour'), DB::raw('COUNT(id) as count'))->whereDate('created_at', '=', $date_format)->groupby('hour')->get();
+            $chart_data = OrderDemaecan::select(DB::raw('hour(created_at) as hour'), DB::raw('COUNT(id) as count'))->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->groupby('hour')->get();
 
             $created_at = $status->created_at;
             
@@ -117,5 +117,13 @@ class StatusController extends Controller
         return \response()->json([
             'message' => 'success'
         ],201);
+    }
+
+    public function recountTotal($user_id,$created_at,$earnings_total)
+    {
+        $user_status = Status::where('user_id',$user_id)->whereDate('created_at', '=', $created_at)->first();
+        $user_status->update([
+            'days_earnings_total' => $earnings_total
+        ]);
     }
 }
