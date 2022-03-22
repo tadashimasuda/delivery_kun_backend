@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\OrderUpdateRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\OrderDemaecan;
-use App\Models\Prefecture;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -93,8 +92,6 @@ class OrderController extends Controller
 
     public function update(OrderUpdateRequest $request)
     {
-        
-
         $user_id = $request->user()->id;
         $order_id = $request->id;
         $earnings_base = $request->earnings_base;
@@ -122,5 +119,26 @@ class OrderController extends Controller
 
             $status_controller->recountTotal($user_id,$created_at,$days_earnings_total);
         });
+    }
+
+    public function destroy(Request $request)
+    {
+        $user_id = $request->user()->id;
+        $order_id = $request->id;
+        $order = OrderDemaecan::find($order_id);
+        $created_at = $order->created_at;
+        $status_controller = app()->make('App\Http\Controllers\StatusController');
+
+        $this->authorize('delete', $order);
+
+        DB::transaction(function () use($order_id,$user_id,$status_controller,$created_at){
+            $order = OrderDemaecan::find($order_id);
+            $order->delete();
+
+            $days_earnings_total = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=',$created_at)->sum('earnings_total');
+            $status_controller->recountTotal($user_id,$created_at,$days_earnings_total);
+            $status_controller->decrementOrderQty($user_id,$created_at);
+        });
+        
     }
 }

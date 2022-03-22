@@ -126,4 +126,12 @@ class StatusController extends Controller
             'days_earnings_total' => $earnings_total
         ]);
     }
+
+    public function decrementOrderQty($user_id,$created_at)
+    {
+        $user_status = Status::where('user_id',$user_id)->whereDate('created_at', '=', $created_at)->first();
+        $user_status->update([
+            'days_earnings_qty' => DB::raw("days_earnings_qty - 1"),
+        ]);
+    }
 }

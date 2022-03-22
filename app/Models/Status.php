@@ -20,8 +20,8 @@ class Status extends Model
         'id',
         'user_id',
         'days_earnings_total',
-        'actual_cost',
         'days_earnings_qty',
+        'actual_cost',
         'prefecture_id',
         'finish_at'
     ];

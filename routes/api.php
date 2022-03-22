@@ -35,6 +35,7 @@ Route::prefix('user')->group(function () {
 Route::middleware('auth:api')->post('/logout', [UserController::class, 'logout']);
 
 Route::prefix('order')->group(function () {
+    Route::middleware('auth:api')->delete('/{id}', [OrderController::class, 'destroy']);
     Route::middleware('auth:api')->patch('/{id}', [OrderController::class, 'update']);
     Route::middleware('auth:api')->get('/{id}', [OrderController::class, 'show']);
     Route::middleware('auth:api')->post('/', [OrderController::class, 'store']);

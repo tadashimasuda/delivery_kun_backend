@@ -65,7 +65,7 @@ class OrderDemaecanPolicy
      */
     public function delete(User $user, OrderDemaecan $orderDemaecan)
     {
-        //
+        return $user->id == $orderDemaecan->user_id;
     }
 
     /**
