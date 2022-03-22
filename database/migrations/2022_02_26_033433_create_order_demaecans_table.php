@@ -20,6 +20,7 @@ class CreateOrderDemaecansTable extends Migration
             $table->float('earnings_incentive');
             $table->float('earnings_base');
             $table->float('earnings_total');
+            $table->timestamp('order_received_at');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

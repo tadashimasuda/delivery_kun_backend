@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderUpdateRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\OrderDemaecan;
 use App\Models\Prefecture;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -87,5 +89,33 @@ class OrderController extends Controller
         $order_id = $request->id;
         $order = OrderDemaecan::find($order_id);
         return new OrderResource($order);
+    }
+
+    public function update(OrderUpdateRequest $request)
+    {
+        $user_id = $request->user()->id;
+        $order_id = $request->id;
+        $earnings_base = $request->earnings_base;
+        $earnings_incentive = $request->earnings_incentive;
+        $earnings_total = $earnings_base * $earnings_incentive;
+        $update_created_at = new Carbon($request->update_date_time);
+        
+        $status_controller = app()->make('App\Http\Controllers\StatusController');
+
+        DB::transaction(function () use($order_id,$earnings_incentive,$earnings_base,$earnings_total,$update_created_at,$user_id,$status_controller) {
+            $order = OrderDemaecan::find($order_id);
+            $created_at = $order->created_at;
+            
+            OrderDemaecan::find($order_id)->update([
+                'earnings_base' => $earnings_base,
+                'earnings_incentive' => $earnings_incentive,
+                'earnings_total' => $earnings_total,
+                'order_received_at' => $update_created_at
+            ]);
+
+            $days_earnings_total = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=',$created_at)->sum('earnings_total');
+
+            $status_controller->recountTotal($user_id,$created_at,$days_earnings_total);
+        });
     }
 }

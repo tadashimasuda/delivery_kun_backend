@@ -20,7 +20,7 @@ class OrderResource extends JsonResource
             'earnings_incentive' => $this->earnings_incentive,
             'earnings_base' => $this->earnings_base,
             'earnings_total' => $this->earnings_total,
-            'created_at' => $this->created_at->format('H時i分'),
+            'order_received_at' => $this->order_received_at,
         ];
     }
 }
