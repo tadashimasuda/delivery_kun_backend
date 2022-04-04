@@ -78,8 +78,8 @@ class OrderController extends Controller
         $date_format = $this->date_format($date);
         
         $user_id = $request->user()->id;
-        $orders = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date_format)->get();
-
+        $orders = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date_format)->orderBy('order_received_at', 'asc')->get();
+        
         return OrderResource::collection($orders);
     }
 
