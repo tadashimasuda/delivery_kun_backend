@@ -141,4 +141,18 @@ class OrderController extends Controller
         });
         
     }
+
+    public function getDateFirstOrder($date,$user_id)
+    {
+        $first_order = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date)->orderBy('order_received_at', 'asc')->first();
+
+        return $first_order->order_received_at;
+    }
+
+    public function getDateLastOrder($date,$user_id)
+    {
+        $last_order = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date)->orderBy('order_received_at', 'desc')->first();
+
+        return $last_order->order_received_at;
+    }
 }
