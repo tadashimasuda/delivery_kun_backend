@@ -36,8 +36,8 @@ class StatusResource extends JsonResource
                 'vehicleModel' => $this->vehicleModel($this->user->vehicle_model),
             ],
             'summary' => [
-                'startTime' => $this->created_at->format('Y/m/d H:i:s'),
-                'endTime' => $this->finish_at->format('Y/m/d H:i:s'),
+                'startTime' => $this->start_time->format('Y/m/d H:i:s'),
+                'endTime' => $this->end_time->format('Y/m/d H:i:s'),
                 'onlineTime' => $this->online_time,
                 'daysEarningsTotal' => $this->days_earnings_total,
                 'actualCost' => $this->actual_cost,
