@@ -59,22 +59,31 @@ class StatusController extends Controller
         if(Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->exists()){
             $status = Status::with('user')->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->first();
         
-            $chart_data = OrderDemaecan::select(DB::raw('hour(created_at) as hour'), DB::raw('COUNT(id) as count'))->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->groupby('hour')->get();
+            $chart_data = OrderDemaecan::select(DB::raw('hour(order_received_at) as hour'), DB::raw('COUNT(id) as count'))->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->groupby('hour')->get();
 
             $created_at = $status->created_at;
+
+            $order_controller = app()->make('App\Http\Controllers\OrderController');
+
+            $first_time = $order_controller->getDateFirstOrder($date,$user_id);
+            $last_time = $order_controller->getDateLastOrder($date,$user_id);
             
             if($this->isToday($created_at)){
+                //最初の受注の時間〜現在の時間
                 $start_time = new Carbon($created_at);
                 $currnet_time = Carbon::now();
                 
                 $diff_time = $start_time->diff($currnet_time);
                 $online_time = $diff_time->format("%h時間%i分");
             }else{
-                $online_time = $this->deffOnlineTime($status->created_at, $status->finish_at);
+                //最初の受注の時間〜最後の受注の時間
+                $online_time = $this->deffOnlineTime($first_time, $last_time);
             }
 
             $status['chart_data'] = $chart_data;
             $status['online_time'] = $online_time;
+            $status['start_time'] = new Carbon($first_time);
+            $status['end_time'] = new Carbon($last_time);
  
             return new StatusResource($status);
         }else{

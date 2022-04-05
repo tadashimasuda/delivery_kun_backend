@@ -78,8 +78,8 @@ class OrderController extends Controller
         $date_format = $this->date_format($date);
         
         $user_id = $request->user()->id;
-        $orders = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date_format)->get();
-
+        $orders = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date_format)->orderBy('order_received_at', 'asc')->get();
+        
         return OrderResource::collection($orders);
     }
 
@@ -140,5 +140,19 @@ class OrderController extends Controller
             $status_controller->decrementOrderQty($user_id,$created_at);
         });
         
+    }
+
+    public function getDateFirstOrder($date,$user_id)
+    {
+        $first_order = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date)->orderBy('order_received_at', 'asc')->first();
+
+        return $first_order->order_received_at;
+    }
+
+    public function getDateLastOrder($date,$user_id)
+    {
+        $last_order = OrderDemaecan::where('user_id',$user_id)->whereDate('created_at', '=', $date)->orderBy('order_received_at', 'desc')->first();
+
+        return $last_order->order_received_at;
     }
 }
