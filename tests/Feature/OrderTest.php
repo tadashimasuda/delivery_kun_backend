@@ -93,17 +93,18 @@ class OrderTest extends TestCase
     {
         $user = $this->signIn();
 
-        $response = $this->json('GET', 'api/order', [], [
+        $response = $this->json('GET', 'api/order?date=20220331', [], [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['access_token']
         ]);
+
         $response->assertStatus(200);
     }
 
     /**
      * @test
      */
-    public function api_orderでGETでクエリなしで401エラー()
+    public function api_orderでGETでクエリなしで400エラー()
     {
         $user = $this->signIn();
 

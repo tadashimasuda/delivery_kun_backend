@@ -34,32 +34,22 @@ class OrderController extends Controller
         $prefecture_id = $user->prefecture_id;
         $status_controller = app()->make('App\Http\Controllers\StatusController');
 
-        if ($status_controller->is_status($user_id)) {
-            DB::transaction(function () use($user_id,$earnings_base,$earnings_total,$earnings_incentive,$prefecture_id,$request,$status_controller) {
-                OrderDemaecan::create([
-                    'user_id' => $user_id,
-                    'earnings_base' => $earnings_base,
-                    'earnings_total' => $earnings_total,
-                    'earnings_incentive' => $earnings_incentive,
-                    'prefecture_id' => $prefecture_id,
-                ]);
-        
-                $status_controller->update($request,$earnings_total);
-            });
-        }else{
-            DB::transaction(function () use($user_id,$earnings_base,$earnings_total,$earnings_incentive,$prefecture_id,$request,$status_controller) {
-                OrderDemaecan::create([
-                    'user_id' => $user_id,
-                    'earnings_base' => $earnings_base,
-                    'earnings_total' => $earnings_total,
-                    'earnings_incentive' => $earnings_incentive,
-                    'prefecture_id' => $prefecture_id,
-                ]);
-        
-                $status_controller->store($request,$earnings_total,$prefecture_id);
-            });
-        }
+        DB::transaction(function () use($user_id,$earnings_base,$earnings_total,$earnings_incentive,$prefecture_id,$request,$status_controller) {
+            OrderDemaecan::create([
+                'user_id' => $user_id,
+                'earnings_base' => $earnings_base,
+                'earnings_total' => $earnings_total,
+                'earnings_incentive' => $earnings_incentive,
+                'prefecture_id' => $prefecture_id,
+            ]);
 
+            if ($status_controller->is_status($user_id)) {
+                $status_controller->update($request,$earnings_total);
+            }else{
+                $status_controller->store($request,$earnings_total,$prefecture_id);
+            }
+        });
+        
         return \response()->json([
             'message' => 'success',
         ], 201);
