@@ -109,6 +109,8 @@ class OrderController extends Controller
 
             $status_controller->recountTotal($user_id,$created_at,$days_earnings_total);
         });
+
+        return \response(null,204);
     }
 
     public function destroy(Request $request)

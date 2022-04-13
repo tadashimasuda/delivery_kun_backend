@@ -144,4 +144,34 @@ class OrderTest extends TestCase
                 ]
             );
     }
+
+    /**
+     * @test
+     */
+    public function patch_api_order_idで204のレスポンス()
+    {
+        $user = $this->signIn();
+
+        $reqest_body_post = [
+            'earnings_incentive' => 2.0
+        ];
+
+        $reqest_body_patch = [
+            'earnings_base' => 660,
+            'earnings_incentive' => 1.1,
+            'update_date_time' => '2022-04-04 14:40:26'
+        ];
+
+        $response = $this->json('POST', 'api/order', $reqest_body_post, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+
+        $response = $this->json('patch', 'api/order/1', $reqest_body_patch, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+
+        $response->assertStatus(204);
+    }
 }
