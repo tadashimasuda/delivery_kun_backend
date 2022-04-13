@@ -132,6 +132,7 @@ class OrderController extends Controller
             $status_controller->decrementOrderQty($user_id,$created_at);
         });
         
+        return \response(null,204);
     }
 
     public function getDateFirstOrder($date,$user_id)
