@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-
     public function date_format($date)
     {
         $date_split_y = substr($date,0,4);
@@ -77,6 +76,7 @@ class OrderController extends Controller
     {
         $order_id = $request->id;
         $order = OrderDemaecan::find($order_id);
+        
         return new OrderResource($order);
     }
 
