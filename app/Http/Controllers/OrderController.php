@@ -118,6 +118,13 @@ class OrderController extends Controller
         $user_id = $request->user()->id;
         $order_id = $request->id;
         $order = OrderDemaecan::find($order_id);
+
+        if(!$order){
+            return \response()->json([
+                'message' => 'データが存在しません'
+            ],404);
+        }
+
         $created_at = $order->created_at;
         $status_controller = app()->make('App\Http\Controllers\StatusController');
 

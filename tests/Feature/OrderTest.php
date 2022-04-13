@@ -198,4 +198,28 @@ class OrderTest extends TestCase
 
         $response->assertStatus(204);
     }
+
+    /**
+     * @test
+     */
+    public function destroy_api_order_idでデータが存在しないときに404のレスポンス()
+    {
+        $user = $this->signIn();
+
+        $reqest_body_post = [
+            'earnings_incentive' => 2.0
+        ];
+
+        $response = $this->json('POST', 'api/order', $reqest_body_post, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+
+        $response = $this->json('delete', 'api/order/2', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+
+        $response->assertStatus(404);
+    }
 }
