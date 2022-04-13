@@ -91,6 +91,12 @@ class OrderController extends Controller
         
         $order = OrderDemaecan::find($order_id);
 
+        if(!$order){
+            return \response()->json([
+                'message' => 'データが存在しません'
+            ],404);
+        }
+
         $this->authorize('update', $order);
 
         $created_at = $order->created_at;
