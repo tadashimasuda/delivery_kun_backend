@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-
     public function date_format($date)
     {
         $date_split_y = substr($date,0,4);
@@ -34,32 +33,22 @@ class OrderController extends Controller
         $prefecture_id = $user->prefecture_id;
         $status_controller = app()->make('App\Http\Controllers\StatusController');
 
-        if ($status_controller->is_status($user_id)) {
-            DB::transaction(function () use($user_id,$earnings_base,$earnings_total,$earnings_incentive,$prefecture_id,$request,$status_controller) {
-                OrderDemaecan::create([
-                    'user_id' => $user_id,
-                    'earnings_base' => $earnings_base,
-                    'earnings_total' => $earnings_total,
-                    'earnings_incentive' => $earnings_incentive,
-                    'prefecture_id' => $prefecture_id,
-                ]);
-        
-                $status_controller->update($request,$earnings_total);
-            });
-        }else{
-            DB::transaction(function () use($user_id,$earnings_base,$earnings_total,$earnings_incentive,$prefecture_id,$request,$status_controller) {
-                OrderDemaecan::create([
-                    'user_id' => $user_id,
-                    'earnings_base' => $earnings_base,
-                    'earnings_total' => $earnings_total,
-                    'earnings_incentive' => $earnings_incentive,
-                    'prefecture_id' => $prefecture_id,
-                ]);
-        
-                $status_controller->store($request,$earnings_total,$prefecture_id);
-            });
-        }
+        DB::transaction(function () use($user_id,$earnings_base,$earnings_total,$earnings_incentive,$prefecture_id,$request,$status_controller) {
+            OrderDemaecan::create([
+                'user_id' => $user_id,
+                'earnings_base' => $earnings_base,
+                'earnings_total' => $earnings_total,
+                'earnings_incentive' => $earnings_incentive,
+                'prefecture_id' => $prefecture_id,
+            ]);
 
+            if ($status_controller->is_status($user_id)) {
+                $status_controller->update($request,$earnings_total);
+            }else{
+                $status_controller->store($request,$earnings_total,$prefecture_id);
+            }
+        });
+        
         return \response()->json([
             'message' => 'success',
         ], 201);
@@ -87,6 +76,7 @@ class OrderController extends Controller
     {
         $order_id = $request->id;
         $order = OrderDemaecan::find($order_id);
+        
         return new OrderResource($order);
     }
 
@@ -100,6 +90,12 @@ class OrderController extends Controller
         $update_created_at = new Carbon($request->update_date_time);
         
         $order = OrderDemaecan::find($order_id);
+
+        if(!$order){
+            return \response()->json([
+                'message' => 'データが存在しません'
+            ],404);
+        }
 
         $this->authorize('update', $order);
 
@@ -119,6 +115,8 @@ class OrderController extends Controller
 
             $status_controller->recountTotal($user_id,$created_at,$days_earnings_total);
         });
+
+        return \response(null,204);
     }
 
     public function destroy(Request $request)
@@ -126,6 +124,13 @@ class OrderController extends Controller
         $user_id = $request->user()->id;
         $order_id = $request->id;
         $order = OrderDemaecan::find($order_id);
+
+        if(!$order){
+            return \response()->json([
+                'message' => 'データが存在しません'
+            ],404);
+        }
+
         $created_at = $order->created_at;
         $status_controller = app()->make('App\Http\Controllers\StatusController');
 
@@ -140,6 +145,7 @@ class OrderController extends Controller
             $status_controller->decrementOrderQty($user_id,$created_at);
         });
         
+        return \response(null,204);
     }
 
     public function getDateFirstOrder($date,$user_id)
