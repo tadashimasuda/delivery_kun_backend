@@ -89,52 +89,55 @@ class UserController extends Controller
         }
     }
 
-    public function OAuthLogin(Request $request)
+    public function OAuthLoginApple(Request $request)
     {
-        $providerName = $request->socialName;
-        $access_token = $request->accessToken;
+        $user_name = $request->userName;
+        $email = $request->email != null ? $request->email : '';
+        $provider_id = $request->providerId;
 
+        return $this->accountFindOrCreate('apple',$provider_id,$user_name,$email);
+    }
+
+    public function OAuthLoginGoogle(Request $request)
+    {
         try {
-            $providerUser = Socialite::driver($providerName)->userFromToken($access_token);
+            $access_token = $request->accessToken;
+
+            $providerUser = Socialite::driver('google')->userFromToken($access_token);
+            $provider_id = $providerUser->getId();
+            $user_name = $providerUser->getName();
+            $email = $providerUser->getEmail();
+
+            if($providerUser){
+                return $this->accountFindOrCreate('google',$provider_id,$user_name,$email);
+            }
         } catch (Exception $e) {
             return $e;
         }
-
-        if($providerUser){
-            return $this->accountFindOrCreate($providerUser,$providerName);
-        }
     }
 
-    public function accountFindOrCreate(ProviderUser $providerUser,$providerName)
+    public function accountFindOrCreate($provider_name,$provider_id,$user_name,$email)
     {
-        $provider_id = $providerUser->getId();
-        $provider_user_name = $providerUser->getName();
-        $provider_user_email = $providerUser->getEmail();
-
-        $is_account = User::where(
-            [
-                ['social_name',"=",$providerName],
+        $is_account = User::where([
+                ['social_name',"=",$provider_name],
                 ['social_id',"=",$provider_id],
             ])->first();
 
         if(!$is_account){
             $user = User::create([
-                'name' => $provider_user_name,
-                'email' => $provider_user_email,
-                'social_name' => $providerName,
+                'name' => $user_name,
+                'email' => $email,
+                'social_name' => $provider_name,
                 'social_id' => $provider_id,
                 'vehicle_model' => 1,
-                'prefecture_id' =>1,
+                'prefecture_id' => 1,
             ]);
 
-            $access_token = $user->createToken('access_token')->accessToken;
-            
-            $user['access_token'] = $access_token;
+            $user['access_token'] = $user->createToken('access_token')->accessToken;
             
             return new UserResource($user);
         }else{
-            $access_token = $is_account->createToken('access_token')->accessToken;
-            $is_account['access_token'] = $access_token;
+            $is_account['access_token'] = $is_account->createToken('access_token')->accessToken;
 
             return new UserResource($is_account);
         }
