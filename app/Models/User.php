@@ -22,7 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'google_id',
+        'social_name',
+        'social_id',
         'prefecture_id',
         'vehicle_model'
     ];

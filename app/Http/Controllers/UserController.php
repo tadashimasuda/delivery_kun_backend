@@ -89,32 +89,40 @@ class UserController extends Controller
         }
     }
 
-    public function getGoogleAuth(Request $request)
+    public function OAuthLogin(Request $request)
     {
+        $providerName = $request->socialName;
         $access_token = $request->accessToken;
 
         try {
-            $providerUser = Socialite::driver('google')->userFromToken($access_token);
+            $providerUser = Socialite::driver($providerName)->userFromToken($access_token);
         } catch (Exception $e) {
             return $e;
         }
 
         if($providerUser){
-            return $this->googleAcountFindOrCreate($providerUser);
+            return $this->accountFindOrCreate($providerUser,$providerName);
         }
     }
 
-    public function googleAcountFindOrCreate(ProviderUser $providerUser)
+    public function accountFindOrCreate(ProviderUser $providerUser,$providerName)
     {
-        $is_googleAccount = User::where('google_id',$providerUser->getId())->first();
-        $google_id = $providerUser->getId();
+        $provider_id = $providerUser->getId();
+        $provider_user_name = $providerUser->getName();
+        $provider_user_email = $providerUser->getEmail();
 
-        if(! $is_googleAccount){
+        $is_account = User::where(
+            [
+                ['social_name',"=",$providerName],
+                ['social_id',"=",$provider_id],
+            ])->first();
 
+        if(!$is_account){
             $user = User::create([
-                'name' => $providerUser->getName(),
-                'email' => $providerUser->getEmail(),
-                'google_id' => $google_id,
+                'name' => $provider_user_name,
+                'email' => $provider_user_email,
+                'social_name' => $providerName,
+                'social_id' => $provider_id,
                 'vehicle_model' => 1,
                 'prefecture_id' =>1,
             ]);
@@ -125,10 +133,10 @@ class UserController extends Controller
             
             return new UserResource($user);
         }else{
-            $access_token = $is_googleAccount->createToken('access_token')->accessToken;
-            $is_googleAccount['access_token'] = $access_token;
+            $access_token = $is_account->createToken('access_token')->accessToken;
+            $is_account['access_token'] = $access_token;
 
-            return new UserResource($is_googleAccount);
+            return new UserResource($is_account);
         }
     }
 }
