@@ -130,7 +130,7 @@ class UserController extends Controller
                 'social_name' => $provider_name,
                 'social_id' => $provider_id,
                 'vehicle_model' => 1,
-                'prefecture_id' => 1,
+                'prefecture_id' => 13,
             ]);
 
             $user['access_token'] = $user->createToken('access_token')->accessToken;
