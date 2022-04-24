@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'social_name',
         'social_id',
+        'img_path',
         'prefecture_id',
         'vehicle_model'
     ];

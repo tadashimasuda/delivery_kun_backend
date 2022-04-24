@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OAuthRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserUpdateRequest;
@@ -9,8 +10,6 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\User as ProviderUser;
 
 class UserController extends Controller
 {
@@ -89,34 +88,18 @@ class UserController extends Controller
         }
     }
 
-    public function OAuthLoginApple(Request $request)
+    public function OAuthLogin(OAuthRequest $request)
     {
+        $provider_name = $request->providerName;
+        $provider_id = $request->providerId;
         $user_name = $request->userName;
         $email = $request->email != null ? $request->email : '';
-        $provider_id = $request->providerId;
+        $user_img = $request->userImg != null ? $request->userImg : '';
 
-        return $this->accountFindOrCreate('apple',$provider_id,$user_name,$email);
+        return $this->accountFindOrCreate($provider_name,$provider_id,$user_name,$email,$user_img);
     }
 
-    public function OAuthLoginGoogle(Request $request)
-    {
-        try {
-            $access_token = $request->accessToken;
-
-            $providerUser = Socialite::driver('google')->userFromToken($access_token);
-            $provider_id = $providerUser->getId();
-            $user_name = $providerUser->getName();
-            $email = $providerUser->getEmail();
-
-            if($providerUser){
-                return $this->accountFindOrCreate('google',$provider_id,$user_name,$email);
-            }
-        } catch (Exception $e) {
-            return $e;
-        }
-    }
-
-    public function accountFindOrCreate($provider_name,$provider_id,$user_name,$email)
+    public function accountFindOrCreate($provider_name,$provider_id,$user_name,$email,$user_img)
     {
         $is_account = User::where([
                 ['social_name',"=",$provider_name],
@@ -129,6 +112,7 @@ class UserController extends Controller
                 'email' => $email,
                 'social_name' => $provider_name,
                 'social_id' => $provider_id,
+                'img_path' => $user_img,
                 'vehicle_model' => 1,
                 'prefecture_id' => 13,
             ]);
