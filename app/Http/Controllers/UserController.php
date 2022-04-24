@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OAuthRequest;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserUpdateRequest;
@@ -9,8 +10,6 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\User as ProviderUser;
 
 class UserController extends Controller
 {
@@ -89,46 +88,42 @@ class UserController extends Controller
         }
     }
 
-    public function getGoogleAuth(Request $request)
+    public function OAuthLogin(OAuthRequest $request)
     {
-        $access_token = $request->accessToken;
+        $provider_name = $request->providerName;
+        $provider_id = $request->providerId;
+        $user_name = $request->userName;
+        $email = $request->email != null ? $request->email : '';
+        $user_img = $request->userImg != null ? $request->userImg : '';
 
-        try {
-            $providerUser = Socialite::driver('google')->userFromToken($access_token);
-        } catch (Exception $e) {
-            return $e;
-        }
-
-        if($providerUser){
-            return $this->googleAcountFindOrCreate($providerUser);
-        }
+        return $this->accountFindOrCreate($provider_name,$provider_id,$user_name,$email,$user_img);
     }
 
-    public function googleAcountFindOrCreate(ProviderUser $providerUser)
+    public function accountFindOrCreate($provider_name,$provider_id,$user_name,$email,$user_img)
     {
-        $is_googleAccount = User::where('google_id',$providerUser->getId())->first();
-        $google_id = $providerUser->getId();
+        $is_account = User::where([
+                ['social_name',"=",$provider_name],
+                ['social_id',"=",$provider_id],
+            ])->first();
 
-        if(! $is_googleAccount){
-
+        if(!$is_account){
             $user = User::create([
-                'name' => $providerUser->getName(),
-                'email' => $providerUser->getEmail(),
-                'google_id' => $google_id,
+                'name' => $user_name,
+                'email' => $email,
+                'social_name' => $provider_name,
+                'social_id' => $provider_id,
+                'img_path' => $user_img,
                 'vehicle_model' => 1,
-                'prefecture_id' =>1,
+                'prefecture_id' => 13,
             ]);
 
-            $access_token = $user->createToken('access_token')->accessToken;
-            
-            $user['access_token'] = $access_token;
+            $user['access_token'] = $user->createToken('access_token')->accessToken;
             
             return new UserResource($user);
         }else{
-            $access_token = $is_googleAccount->createToken('access_token')->accessToken;
-            $is_googleAccount['access_token'] = $access_token;
+            $is_account['access_token'] = $is_account->createToken('access_token')->accessToken;
 
-            return new UserResource($is_googleAccount);
+            return new UserResource($is_account);
         }
     }
 }

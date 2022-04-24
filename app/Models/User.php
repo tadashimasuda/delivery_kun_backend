@@ -22,7 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'google_id',
+        'social_name',
+        'social_id',
+        'img_path',
         'prefecture_id',
         'vehicle_model'
     ];
