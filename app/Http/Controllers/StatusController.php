@@ -61,16 +61,14 @@ class StatusController extends Controller
         
             $chart_data = OrderDemaecan::select(DB::raw('hour(order_received_at) as hour'), DB::raw('COUNT(id) as count'))->where('user_id', $user_id)->whereDate('created_at', '=', $date_format)->groupby('hour')->get();
 
-            $created_at = $status->created_at;
-
             $order_controller = app()->make('App\Http\Controllers\OrderController');
 
             $first_time = $order_controller->getDateFirstOrder($date,$user_id);
             $last_time = $order_controller->getDateLastOrder($date,$user_id);
             
-            if($this->isToday($created_at)){
+            if($this->isToday($first_time)){
                 //最初の受注の時間〜現在の時間
-                $start_time = new Carbon($created_at);
+                $start_time = new Carbon($first_time);
                 $currnet_time = Carbon::now();
                 
                 $diff_time = $start_time->diff($currnet_time);

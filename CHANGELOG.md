@@ -1,0 +1,2 @@
+GoogleSignInをSociliteからFirebaseに変更
+Appleログインを追加
