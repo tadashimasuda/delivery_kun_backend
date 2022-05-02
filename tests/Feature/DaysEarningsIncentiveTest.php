@@ -9,14 +9,21 @@ use Tests\TestCase;
 class DaysEarningsIncentiveTest extends TestCase
 {
     /**
-     * A basic feature test example.
-     *
-     * @return void
+     * @test
      */
-    public function test_example()
+    public function api_incentiveにPOSTでアクセスできる()
     {
-        $response = $this->get('/');
+        $user = $this->signIn();
 
+        $reqest_body = [];
+        for ($hour=7; $hour <= 24; $hour++) { 
+            $reqest_body[$hour] = 1.0;
+        }
+
+        $response = $this->json('POST', 'api/incentive', $reqest_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
         $response->assertStatus(200);
     }
 }

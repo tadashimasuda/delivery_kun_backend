@@ -6,5 +6,8 @@ use Illuminate\Http\Request;
 
 class DaysEarningsIncentiveController extends Controller
 {
-    //
+    public function store(Request $request)
+    {
+        
+    }
 }
