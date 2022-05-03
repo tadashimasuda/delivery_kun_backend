@@ -16,8 +16,12 @@ class DaysEarningsIncentiveTest extends TestCase
         $user = $this->signIn();
 
         $reqest_body = [];
+        $reqest_body['data']=[];
         for ($hour=7; $hour <= 24; $hour++) { 
-            $reqest_body[$hour] = 1.0;
+            $reqest_body['data'][] = [
+                "hour" => $hour,
+                "incentive" => 1.0
+            ];
         }
 
         $response = $this->json('POST', 'api/incentive', $reqest_body, [
@@ -25,5 +29,22 @@ class DaysEarningsIncentiveTest extends TestCase
             'Authorization' => 'Bearer ' . $user['access_token']
         ]);
         $response->assertStatus(200);
+    }
+
+    /**
+     * @test
+     */
+    public function api_incentiveにPOSTでrequestBodyなしで403エラー()
+    {
+        $user = $this->signIn();
+
+        $reqest_body = [];
+
+        $response = $this->json('POST', 'api/incentive', $reqest_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(422);
+
     }
 }
