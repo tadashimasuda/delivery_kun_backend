@@ -38,6 +38,27 @@ class DaysEarningsIncentiveController extends Controller
         return $insert_data;
     }
 
+    public function isTodayIncentive($user_id)
+    {
+        $today = Carbon::now();
+        $current_hour = Carbon::createFromTime($today->hour,0,0);
+
+        $is_today_incentive = DaysEarningsIncentive::where('user_id',$user_id)->where('incentive_hour',$current_hour)->exists();
+
+        return $is_today_incentive;
+    }
+
+    public function getTodayIncentive($user_id)
+    {
+        $today = Carbon::now();
+        $current_hour = Carbon::createFromTime($today->hour,0,0);
+
+        $today_incentive = DaysEarningsIncentive::where('user_id',$user_id)->where('incentive_hour',$current_hour)->first();
+        $earnings_incentive = $today_incentive->earnings_incentive;
+        
+        return $earnings_incentive;
+    }
+
     public function store(DaysEarningsIncentiveRequest $request)
     {
         $user_id = $request->user()->id;

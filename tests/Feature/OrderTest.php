@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Models\DaysEarningsIncentive;
 use App\Models\OrderDemaecan;
 use App\Models\Status;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
+
 use Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -251,5 +252,53 @@ class OrderTest extends TestCase
         ]);
 
         $response->assertStatus(404);
+    }
+
+    /**
+     * @test
+     */
+    public function post_api_orderでtodayIncentiveを登録済みのときのレコードチェック()
+    {
+        $user = $this->signIn();
+
+        $test_insert_data = [];
+        $check_data['data'] = [];
+        for ($hour = 7,$today_incentive = 1.0; $hour <= 24; $hour++,$today_incentive += 0.1) {
+            $current_time = Carbon::now();
+            $test_insert_data[] = [
+                'user_id' => $user['id'],
+                'earnings_incentive' => $today_incentive,
+                'incentive_hour' => Carbon::createFromTime($hour,0,0,'Asia/Tokyo'),
+                'created_at' => $current_time,
+                'updated_at' => $current_time,
+            ];
+            $today_incentives[] = [
+                'user_id' => $user['id'],
+                'earnings_incentive' => $today_incentive,
+                'created_at' => $current_time
+            ]; 
+        }
+
+        DaysEarningsIncentive::insert($test_insert_data);
+
+        $reqest_body = [
+            'earnings_incentive' => 1.5
+        ];
+
+        $response = $this->json('POST', 'api/order', $reqest_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+
+        //7時=>1.0,8時=>1.1,9時=>1.2,10時=>1.3,11時=>1.4,
+        //12時=>1.5,13時=>1.6,14時=>1.7,15時=>1.8,16時=>1.9,
+        //17時=>2.0,18時=>2.1,19時=>2.2,20時=>2.3,21時=>2.4
+        //22時=>2.5,23時=>2.6,24時=>2.7
+        $this->assertDatabaseHas('order_demaecans', [
+            'user_id' => $user['id'],
+            'earnings_incentive' => 2.5,
+        ]);
+
+        $response->assertStatus(201);
     }
 }
