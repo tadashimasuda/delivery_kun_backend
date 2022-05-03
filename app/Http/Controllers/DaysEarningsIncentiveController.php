@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DaysEarningsIncentiveRequest;
+use App\Http\Resources\DaysEarningsIncentiveResource;
 use App\Models\DaysEarningsIncentive;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -74,8 +75,10 @@ class DaysEarningsIncentiveController extends Controller
 
         $today_incentives_count = DaysEarningsIncentive::where('user_id',$user_id)->whereDate('created_at', $today)->count();
 
-        if($today_incentives_count == 17){
-            return response()->json(['message'=>'17records'],200);
+        if($today_incentives_count == 18){
+            $today_incentives = DaysEarningsIncentive::where('user_id',$user_id)->whereDate('created_at', $today)->orderBy('incentive_hour')->get();
+
+            return DaysEarningsIncentiveResource::collection($today_incentives);
         }else{
             return response()->json(['message'=>'nodata'],200);
         }

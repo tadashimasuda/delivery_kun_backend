@@ -152,4 +152,40 @@ class DaysEarningsIncentiveTest extends TestCase
             'message' => 'nodata'
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function api_incentiveにGETでアクセスでデータがある時のデータのレスポンス()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = $this->signIn();
+
+        $test_insert_data = [];
+        $check_data['data'] = [];
+        for ($hour=7; $hour <= 24; $hour++) { 
+            $test_insert_data[] = [
+                'user_id' => $user['id'],
+                'earnings_incentive' => 1.2,
+                'incentive_hour' => Carbon::createFromTime($hour,0,0,'Asia/Tokyo'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+            $check_data['data'][] = [
+                'incentive_hour' => Carbon::createFromTime($hour,0,0,'Asia/Tokyo')->format('H'),
+                'earnings_incentive' => 1.2,
+            ];
+        }
+
+        DaysEarningsIncentive::insert($test_insert_data);
+
+        $response = $this->json('GET', 'api/incentive', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response
+        ->assertStatus(200)
+        ->assertJson($check_data);
+    }
 }

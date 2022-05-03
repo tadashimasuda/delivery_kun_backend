@@ -15,4 +15,8 @@ class DaysEarningsIncentive extends Model
      * @var array<int, string>
      */
     protected $fillable = ['user_id','incentive_hour','earnings_incentive'];
+
+    protected $dates = [
+        'incentive_hour'
+    ];
 }
