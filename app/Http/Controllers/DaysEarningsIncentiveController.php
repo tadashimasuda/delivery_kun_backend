@@ -48,9 +48,10 @@ class DaysEarningsIncentiveController extends Controller
             $insert_data = $this->arrange_list($request['data'],$user_id,false);
             
             foreach ($insert_data as $row) {
-                DaysEarningsIncentive::where('user_id',$user_id)->whereDate('created_at', $today)->update(
+                DaysEarningsIncentive::where('user_id',$user_id)
+                ->where('incentive_hour', $row['incentive_hour'])
+                ->whereDate('created_at', $today)->update(
                     [
-                        "incentive_hour" => $row['incentive_hour'],
                         "earnings_incentive" => $row['earnings_incentive'],
                     ]
                 );
