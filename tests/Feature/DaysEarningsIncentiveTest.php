@@ -134,4 +134,22 @@ class DaysEarningsIncentiveTest extends TestCase
         ]);
         $response->assertStatus(200);
     }
+
+    /**
+     * @test
+     */
+    public function api_incentiveにGETでアクセスでNODATAで特定のメッセージが返却()
+    {
+        $user = $this->signIn();
+
+        $response = $this->json('GET', 'api/incentive', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response
+        ->assertStatus(200)
+        ->assertJson([
+            'message' => 'nodata'
+        ]);
+    }
 }
