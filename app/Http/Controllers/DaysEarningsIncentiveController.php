@@ -66,4 +66,18 @@ class DaysEarningsIncentiveController extends Controller
             return response()->json([],204);
         }
     }
+
+    public function index(Request $request)
+    {
+        $user_id = $request->user()->id;
+        $today = Carbon::today();
+
+        $today_incentives_count = DaysEarningsIncentive::where('user_id',$user_id)->whereDate('created_at', $today)->count();
+
+        if($today_incentives_count == 17){
+            return response()->json(['message'=>'17records'],200);
+        }else{
+            return response()->json(['message'=>'nodata'],200);
+        }
+    }
 }

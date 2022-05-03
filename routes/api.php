@@ -47,5 +47,6 @@ Route::get('/status', [StatusController::class, 'index']);
 Route::middleware('auth:api')->patch('/actual_cost', [StatusController::class, 'updateActualCost']);
 
 Route::prefix('incentive')->group(function () {
+    Route::middleware('auth:api')->get('/', [DaysEarningsIncentiveController::class, 'index']);
     Route::middleware('auth:api')->post('/', [DaysEarningsIncentiveController::class, 'store']);
 });

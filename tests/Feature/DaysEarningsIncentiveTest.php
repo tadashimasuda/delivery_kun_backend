@@ -120,4 +120,18 @@ class DaysEarningsIncentiveTest extends TestCase
 
         $response->assertStatus(204);
     }
+
+    /**
+     * @test
+     */
+    public function api_incentiveにGETでアクセスできる()
+    {
+        $user = $this->signIn();
+
+        $response = $this->json('GET', 'api/incentive', [], [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $response->assertStatus(200);
+    }
 }
