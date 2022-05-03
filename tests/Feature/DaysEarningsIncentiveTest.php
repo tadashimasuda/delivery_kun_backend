@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -19,8 +20,8 @@ class DaysEarningsIncentiveTest extends TestCase
         $reqest_body['data']=[];
         for ($hour=7; $hour <= 24; $hour++) { 
             $reqest_body['data'][] = [
-                "hour" => $hour,
-                "incentive" => 1.0
+                'hour' => $hour,
+                'incentive' => 1.2,
             ];
         }
 
@@ -28,7 +29,7 @@ class DaysEarningsIncentiveTest extends TestCase
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['access_token']
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(204);
     }
 
     /**
@@ -45,6 +46,33 @@ class DaysEarningsIncentiveTest extends TestCase
             'Authorization' => 'Bearer ' . $user['access_token']
         ]);
         $response->assertStatus(422);
+    }
 
+    /**
+     * @test
+     */
+    public function api_incentiveにPOSTでデータが存在しないときにinsertできる()
+    {
+        $user = $this->signIn();
+
+        $reqest_body['data']=[];
+        for ($hour=7; $hour <= 24; $hour++) { 
+            $reqest_body['data'][] = [
+                'hour' => $hour,
+                'incentive' => 1.2,
+            ];
+        }
+
+        $test_time = Carbon::createFromTime(9,0,0);
+        $response = $this->json('POST', 'api/incentive', $reqest_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+        $this->assertDatabaseHas('days_earnings_incentives', [
+            'user_id' => $user['id'],
+            'earnings_incentive' => 1.2,
+            'incentive_hour' => $test_time
+        ]);
+        $response->assertStatus(204);
     }
 }
