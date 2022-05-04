@@ -101,7 +101,7 @@ class DaysEarningsIncentiveController extends Controller
 
             return DaysEarningsIncentiveResource::collection($today_incentives);
         }else{
-            return response()->json(['message'=>'nodata'],200);
+            return response()->json(['message'=>'nodata'],204);
         }
     }
 }
