@@ -39,7 +39,7 @@ class StatusResource extends JsonResource
                 'startTime' => $this->start_time->format('Y/m/d H:i:s'),
                 'endTime' => $this->end_time->format('Y/m/d H:i:s'),
                 'onlineTime' => $this->online_time,
-                'daysEarningsTotal' => $this->days_earnings_total,
+                'daysEarningsTotal' => intval($this->days_earnings_total),
                 'actualCost' => $this->actual_cost,
                 'daysEarningsQty' => $this->days_earnings_qty
             ],
