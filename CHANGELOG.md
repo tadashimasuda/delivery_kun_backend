@@ -1,2 +1,5 @@
 GoogleSignInをSociliteからFirebaseに変更
 Appleログインを追加
+
+1.0.3
+インセンティブ登録可能にした
