@@ -19,7 +19,7 @@ class DaysEarningsIncentiveController extends Controller
         $insert_data = [];
 
         foreach($data as $row){
-            $row['hour'] = Carbon::createFromTime($row['hour'],0,0,);
+            $row['incentive_hour'] = Carbon::createFromTime($row['incentive_hour'],0,0,);
             $values = array_values($row);
             array_unshift($values,$user_id);
 
@@ -101,7 +101,9 @@ class DaysEarningsIncentiveController extends Controller
 
             return DaysEarningsIncentiveResource::collection($today_incentives);
         }else{
-            return response()->json(['message'=>'nodata'],204);
+            return response()->json(
+                [],204
+            );
         }
     }
 }

@@ -21,8 +21,8 @@ class DaysEarningsIncentiveTest extends TestCase
         $reqest_body['data']=[];
         for ($hour=7; $hour <= 24; $hour++) { 
             $reqest_body['data'][] = [
-                'hour' => $hour,
-                'incentive' => 1.2,
+                'incentive_hour' => $hour,
+                'earnings_incentive' => 1.2,
             ];
         }
 
@@ -59,8 +59,8 @@ class DaysEarningsIncentiveTest extends TestCase
         $reqest_body['data']=[];
         for ($hour=7; $hour <= 24; $hour++) { 
             $reqest_body['data'][] = [
-                'hour' => $hour,
-                'incentive' => 1.2,
+                'incentive_hour' => $hour,
+                'earnings_incentive' => 1.2,
             ];
         }
 
@@ -90,8 +90,8 @@ class DaysEarningsIncentiveTest extends TestCase
 
         for ($hour=7; $hour <= 24; $hour++) { 
             $reqest_body['data'][] = [
-                'hour' => $hour,
-                'incentive' => 1.5,
+                'incentive_hour' => $hour,
+                'earnings_incentive' => 1.5,
             ];
             $test_insert_data[] = [
                 'user_id' => $user['id'],
@@ -132,7 +132,7 @@ class DaysEarningsIncentiveTest extends TestCase
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['access_token']
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(204);
     }
 
     /**
@@ -146,11 +146,8 @@ class DaysEarningsIncentiveTest extends TestCase
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['access_token']
         ]);
-        $response
-        ->assertStatus(200)
-        ->assertJson([
-            'message' => 'nodata'
-        ]);
+
+        $response->assertNoContent(204);
     }
 
     /**
