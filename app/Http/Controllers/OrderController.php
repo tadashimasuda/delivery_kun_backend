@@ -26,14 +26,22 @@ class OrderController extends Controller
     {
         $user = User::with('prefecture')->find($request->user()->id);
 
+        $status_controller = app()->make('App\Http\Controllers\StatusController');
+        $days_incentive_controller = app()->make('App\Http\Controllers\DaysEarningsIncentiveController');
+
         $earnings_incentive = $request->earnings_incentive;
         $earnings_base = $user->prefecture->earnings_base;
-        $earnings_total = $earnings_incentive * $earnings_base;
         $user_id = $request->user()->id;
         $prefecture_id = $user->prefecture_id;
-        $status_controller = app()->make('App\Http\Controllers\StatusController');
+        $is_today_incentive = $days_incentive_controller->isTodayIncentive($user_id);
 
-        DB::transaction(function () use($user_id,$earnings_base,$earnings_total,$earnings_incentive,$prefecture_id,$request,$status_controller) {
+        if($is_today_incentive){
+            $earnings_incentive = $days_incentive_controller->getTodayIncentive($user_id);
+        }
+
+        DB::transaction(function () use($user_id,$earnings_base,$earnings_incentive,$prefecture_id,$request,$status_controller) {
+            $earnings_total = $earnings_incentive * $earnings_base;
+            
             OrderDemaecan::create([
                 'user_id' => $user_id,
                 'earnings_base' => $earnings_base,
