@@ -25,8 +25,8 @@ class DaysEarningsIncentiveRequest extends FormRequest
     {
         return [
             'data' => 'required|array',
-            'data*hour' => 'required|int',
-            'data*incentive' => 'required|numeric'
+            'data*incentive_hour' => 'required|int',
+            'data*earnings_incentive' => 'required|numeric'
         ];
     }
 }
