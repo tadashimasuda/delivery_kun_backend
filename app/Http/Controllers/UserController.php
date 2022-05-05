@@ -126,4 +126,13 @@ class UserController extends Controller
             return new UserResource($is_account);
         }
     }
+
+    public function userCount()
+    {
+        $user_count = User::count();
+
+        return response()->json([
+            'userCount' => $user_count
+        ]);
+    }
 }
