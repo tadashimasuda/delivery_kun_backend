@@ -50,3 +50,5 @@ Route::prefix('incentive')->group(function () {
     Route::middleware('auth:api')->get('/', [DaysEarningsIncentiveController::class, 'index']);
     Route::middleware('auth:api')->post('/', [DaysEarningsIncentiveController::class, 'store']);
 });
+
+Route::get('/count/users',[UserController::class,'userCount']);
