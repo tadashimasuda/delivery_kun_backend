@@ -21,7 +21,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => $request->password,
-            'prefecture_id' => 1,
+            'prefecture_id' => 13,
             'vehicle_model' => 0
         ]);
 
