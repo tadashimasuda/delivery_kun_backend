@@ -28,15 +28,21 @@ class OrderController extends Controller
 
         $status_controller = app()->make('App\Http\Controllers\StatusController');
         $days_incentive_controller = app()->make('App\Http\Controllers\DaysEarningsIncentiveController');
+        $earnings_base_controller = app()->make('App\Http\Controllers\EarningsBaseController');
 
         $earnings_incentive = $request->earnings_incentive;
         $earnings_base = $user->prefecture->earnings_base;
         $user_id = $request->user()->id;
         $prefecture_id = $user->prefecture_id;
         $is_today_incentive = $days_incentive_controller->isTodayIncentive($user_id);
+        $is_earnings_base = $earnings_base_controller->is_earningsBase($user->id);
 
         if($is_today_incentive){
             $earnings_incentive = $days_incentive_controller->getTodayIncentive($user_id);
+        }
+        
+        if($is_earnings_base){
+            $earnings_base = $earnings_base_controller->get_earningsBase($user->id);
         }
 
         DB::transaction(function () use($user_id,$earnings_base,$earnings_incentive,$prefecture_id,$request,$status_controller) {
