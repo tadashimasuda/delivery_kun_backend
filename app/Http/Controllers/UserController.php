@@ -79,6 +79,7 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request)
     {
+        $earnings_base_controller = app()->make('App\Http\Controllers\EarningsBaseController');
         $user_id = $request->user()->id;
         $user = User::find($user_id);
 
@@ -89,6 +90,8 @@ class UserController extends Controller
                 'vehicle_model' => $request->vehicleModelId,
                 'prefecture_id' => $request->prefectureId
             ]);
+
+            $earnings_base_controller->earning_base_updateOrCreate($user_id,$request->earningsBase);
 
             return \response()->json(['message'=>'success'],201);
         }catch(Exception $e){

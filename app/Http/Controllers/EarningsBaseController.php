@@ -18,4 +18,12 @@ class EarningsBaseController extends Controller
         
         return $earnings_base->earnings_base;
     }
+
+    public function earning_base_updateOrCreate($user_id,$earnings_base)
+    {
+        EarningsBase::updateOrCreate(
+            ['user_id' => $user_id],
+            ['earnings_base' => $earnings_base]
+        );
+    }
 }
