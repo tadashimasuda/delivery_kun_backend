@@ -13,7 +13,7 @@ class CreateEarningsBase extends Migration
      */
     public function up()
     {
-        Schema::create('earnings_base', function (Blueprint $table) {
+        Schema::create('earnings_bases', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->float('earnings_base');
@@ -31,6 +31,6 @@ class CreateEarningsBase extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('earnings_base');
+        Schema::dropIfExists('earnings_bases');
     }
 }
