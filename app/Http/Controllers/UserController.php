@@ -62,9 +62,17 @@ class UserController extends Controller
     {
         $access_token = $request->header('Authorization');
         $replace_access_token = str_replace('Bearer ', '', $access_token);
+        $earnings_base_controller = app()->make('App\Http\Controllers\EarningsBaseController');
 
         $user = $request->user();
         $user['access_token'] = $replace_access_token;
+        $user['earnings_base'] = $user->prefecture->earnings_base;
+
+        $is_earnings_base = $earnings_base_controller->is_earningsBase($user->id);
+
+        if($is_earnings_base){
+            $user['earnings_base'] = $earnings_base_controller->get_earningsBase($user->id);
+        }
 
         return new UserResource($user);
     }
