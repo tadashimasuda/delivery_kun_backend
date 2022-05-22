@@ -62,15 +62,24 @@ class UserController extends Controller
     {
         $access_token = $request->header('Authorization');
         $replace_access_token = str_replace('Bearer ', '', $access_token);
+        $earnings_base_controller = app()->make('App\Http\Controllers\EarningsBaseController');
 
         $user = $request->user();
         $user['access_token'] = $replace_access_token;
+        $user['earnings_base'] = $user->prefecture->earnings_base;
+
+        $is_earnings_base = $earnings_base_controller->is_earningsBase($user->id);
+
+        if($is_earnings_base){
+            $user['earnings_base'] = $earnings_base_controller->get_earningsBase($user->id);
+        }
 
         return new UserResource($user);
     }
 
     public function update(UserUpdateRequest $request)
     {
+        $earnings_base_controller = app()->make('App\Http\Controllers\EarningsBaseController');
         $user_id = $request->user()->id;
         $user = User::find($user_id);
 
@@ -81,6 +90,8 @@ class UserController extends Controller
                 'vehicle_model' => $request->vehicleModelId,
                 'prefecture_id' => $request->prefectureId
             ]);
+
+            $earnings_base_controller->earning_base_updateOrCreate($user_id,$request->earningsBase);
 
             return \response()->json(['message'=>'success'],201);
         }catch(Exception $e){
