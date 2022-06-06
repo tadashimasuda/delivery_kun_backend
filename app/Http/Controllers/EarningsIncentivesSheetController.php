@@ -70,7 +70,13 @@ class EarningsIncentivesSheetController extends Controller
         $current_hour = sprintf('%02d',$dt->hour);
 
         $incentive_sheet = EarningsIncentivesSheet::where('id',$sheet_id)->first();
+        
+        if(!$incentive_sheet){
+            return false;
+        }
 
-        return (float)$incentive_sheet->earnings_incentives["$current_hour"];
+        $earnings_incentives = $incentive_sheet->earnings_incentives;
+
+        return array_key_exists("$current_hour",$earnings_incentives) ? (float)$earnings_incentives["$current_hour"] : false;
     }
 }

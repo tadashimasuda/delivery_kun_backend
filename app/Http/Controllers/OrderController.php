@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\OrderRequest;
 use App\Http\Requests\OrderUpdateRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\OrderDemaecan;
@@ -22,8 +23,8 @@ class OrderController extends Controller
 
         return $format_day;
     }
-    
-    public function store(Request $request)
+
+    public function store(OrderRequest $request)
     {
         $user = User::with('prefecture')->find($request->user()->id);
 
@@ -33,7 +34,7 @@ class OrderController extends Controller
 
         $earnings_incentive = $request->earnings_incentive;
         $earnings_base = $user->prefecture->earnings_base;
-        $sheet_id = $request->sheet_id;
+        $sheet_id = $request->sheetId;
         $user_id = $request->user()->id;
         $prefecture_id = $user->prefecture_id;
         $current_incentive = $incentive_controller->get_current_incentive($sheet_id);
