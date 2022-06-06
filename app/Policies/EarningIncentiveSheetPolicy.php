@@ -65,7 +65,7 @@ class EarningIncentiveSheetPolicy
      */
     public function delete(User $user, EarningsIncentivesSheet $earningsIncentivesSheet)
     {
-        //
+        return $user->id == $earningsIncentivesSheet->user_id;
     }
 
     /**

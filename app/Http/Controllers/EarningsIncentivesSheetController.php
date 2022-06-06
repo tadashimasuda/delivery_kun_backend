@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EarningsIncentivesSheetRequest;
 use App\Http\Requests\UpdateEarningsIncentivesSheetRequest;
 use App\Models\EarningsIncentivesSheet;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class EarningsIncentivesSheetController extends Controller
@@ -37,5 +38,20 @@ class EarningsIncentivesSheetController extends Controller
         ]);
 
         return response()->json(null,201);
+    }
+
+    public function destroy(Request $request)
+    {
+        $sheet = EarningsIncentivesSheet::where('id',$request->id)->first();
+        
+        if(!$sheet){
+            return response()->json(null,404);
+        }
+
+        $this->authorize('delete',$sheet);
+
+        EarningsIncentivesSheet::where('id',$request->id)->delete();
+
+        return response()->json(null,204);
     }
 }
