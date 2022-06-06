@@ -4,12 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EarningsIncentivesSheetRequest;
 use App\Http\Requests\UpdateEarningsIncentivesSheetRequest;
+use App\Http\Resources\EarningsIncentiveSheetResource;
 use App\Models\EarningsIncentivesSheet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class EarningsIncentivesSheetController extends Controller
 {
+    public function index(Request $request)
+    {
+        $incentive_sheets = EarningsIncentivesSheet::where('user_id',$request->user()->id)->get();
+
+        return EarningsIncentiveSheetResource::collection($incentive_sheets);
+    }
     public function store(EarningsIncentivesSheetRequest $request)
     {
         EarningsIncentivesSheet::create([
