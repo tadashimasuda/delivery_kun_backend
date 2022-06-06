@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EarningsIncentivesSheetRequest;
+use App\Http\Requests\UpdateEarningsIncentivesSheetRequest;
 use App\Models\EarningsIncentivesSheet;
 use Illuminate\Support\Str;
 
@@ -20,7 +21,7 @@ class EarningsIncentivesSheetController extends Controller
         return response()->json(null,201);
     }
 
-    public function update(EarningsIncentivesSheetRequest $request)
+    public function update(UpdateEarningsIncentivesSheetRequest $request)
     {
         $sheet = EarningsIncentivesSheet::where('id',$request->id)->first();
 
