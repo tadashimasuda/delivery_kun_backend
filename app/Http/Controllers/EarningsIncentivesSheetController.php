@@ -28,12 +28,13 @@ class EarningsIncentivesSheetController extends Controller
             return response()->json(null,404);
         }
 
+        $this->authorize('update',$sheet);
+
         EarningsIncentivesSheet::where('id',$request->id)->update([
             'title' => $request->title,
             'earnings_incentives' => $request->earnings_incentives
         ]);
 
         return response()->json(null,201);
-
     }
 }

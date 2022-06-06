@@ -15,4 +15,9 @@ class EarningsIncentivesSheet extends Model
     protected $casts = [
         'earnings_incentives' => 'json'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
