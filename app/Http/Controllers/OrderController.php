@@ -27,18 +27,19 @@ class OrderController extends Controller
         $user = User::with('prefecture')->find($request->user()->id);
 
         $status_controller = app()->make('App\Http\Controllers\StatusController');
-        $days_incentive_controller = app()->make('App\Http\Controllers\DaysEarningsIncentiveController');
+        $incentive_controller = app()->make('App\Http\Controllers\EarningsIncentivesSheetController');
         $earnings_base_controller = app()->make('App\Http\Controllers\EarningsBaseController');
 
         $earnings_incentive = $request->earnings_incentive;
         $earnings_base = $user->prefecture->earnings_base;
+        $sheet_id = $request->sheet_id;
         $user_id = $request->user()->id;
         $prefecture_id = $user->prefecture_id;
-        $is_today_incentive = $days_incentive_controller->isTodayIncentive($user_id);
+        $current_incentive = $incentive_controller->get_current_incentive($sheet_id);
         $is_earnings_base = $earnings_base_controller->is_earningsBase($user->id);
 
-        if($is_today_incentive){
-            $earnings_incentive = $days_incentive_controller->getTodayIncentive($user_id);
+        if($current_incentive){
+            $earnings_incentive = $current_incentive;
         }
         
         if($is_earnings_base){

@@ -6,6 +6,7 @@ use App\Http\Requests\EarningsIncentivesSheetRequest;
 use App\Http\Requests\UpdateEarningsIncentivesSheetRequest;
 use App\Http\Resources\EarningsIncentiveSheetResource;
 use App\Models\EarningsIncentivesSheet;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -17,6 +18,7 @@ class EarningsIncentivesSheetController extends Controller
 
         return EarningsIncentiveSheetResource::collection($incentive_sheets);
     }
+
     public function store(EarningsIncentivesSheetRequest $request)
     {
         EarningsIncentivesSheet::create([
@@ -60,5 +62,15 @@ class EarningsIncentivesSheetController extends Controller
         EarningsIncentivesSheet::where('id',$request->id)->delete();
 
         return response()->json(null,204);
+    }
+
+    public function get_current_incentive($sheet_id)
+    {
+        $dt = Carbon::now();
+        $current_hour = sprintf('%02d',$dt->hour);
+
+        $incentive_sheet = EarningsIncentivesSheet::where('id',$sheet_id)->first();
+
+        return (float)$incentive_sheet->earnings_incentives["$current_hour"];
     }
 }
