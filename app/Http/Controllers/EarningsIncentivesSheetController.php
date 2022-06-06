@@ -19,4 +19,21 @@ class EarningsIncentivesSheetController extends Controller
 
         return response()->json(null,201);
     }
+
+    public function update(EarningsIncentivesSheetRequest $request)
+    {
+        $sheet = EarningsIncentivesSheet::where('id',$request->id)->first();
+
+        if(!$sheet){
+            return response()->json(null,404);
+        }
+
+        EarningsIncentivesSheet::where('id',$request->id)->update([
+            'title' => $request->title,
+            'earnings_incentives' => $request->earnings_incentives
+        ]);
+
+        return response()->json(null,201);
+
+    }
 }
