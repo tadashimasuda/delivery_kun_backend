@@ -22,6 +22,7 @@ class OrderController extends Controller
 
         return $format_day;
     }
+    
     public function store(Request $request)
     {
         $user = User::with('prefecture')->find($request->user()->id);
