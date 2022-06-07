@@ -46,7 +46,7 @@ class EarningsIncentivesSheetController extends Controller
             'earnings_incentives' => $request->earnings_incentives
         ]);
 
-        return response()->json(null,201);
+        return response()->json(null,204);
     }
 
     public function destroy(Request $request)
