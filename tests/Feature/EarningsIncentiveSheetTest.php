@@ -206,7 +206,6 @@ class EarningsIncentiveSheetTest extends TestCase
             ];
         }
 
-
         $response = $this->json('PATCH', 'api/incentive_sheets/'.$uuid, $request_body, [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['access_token']
@@ -249,6 +248,69 @@ class EarningsIncentiveSheetTest extends TestCase
         }
 
         $response = $this->json('PATCH', 'api/incentive_sheets/'.$uuid, $request_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+
+        $response->assertStatus(404);
+    }
+
+    /**
+     * DELETE api incentive_sheet
+     */
+    
+    /**
+     * @test
+     */
+    public function api_incentive_sheetsにDELETEでデータ削除()
+    {
+        $user = $this->signIn();
+        $uuid = Str::uuid();
+
+        for ($hour=7; $hour <= 10; $hour++) { 
+            $earnings_incentives[] = [
+                sprintf('%02d',$hour) => 2.0,
+            ];
+        }
+
+        EarningsIncentivesSheet::factory()->create([
+            'id' => $uuid,
+            'user_id' => $user->id,
+            'title' => 'sample',
+            'earnings_incentives' => $earnings_incentives
+        ]);
+
+        $request_body = [
+            'id' => $uuid,
+        ];
+
+        $response = $this->json('DELETE', 'api/incentive_sheets/'.$uuid, $request_body, [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $user['access_token']
+        ]);
+
+        $response->assertStatus(204);
+
+        $this->assertDeleted('earnings_incentives_sheets', [
+            'id' => $uuid,
+            'user_id' => $user->id,
+            'title' => 'sample title',
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function api_incentive_sheetsにDELETEでデータが無い時404()
+    {
+        $user = $this->signIn();
+        $uuid = Str::uuid();
+
+        $request_body = [
+            'id' => $uuid,
+        ];
+
+        $response = $this->json('DELETE', 'api/incentive_sheets/'.$uuid, $request_body, [
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $user['access_token']
         ]);
