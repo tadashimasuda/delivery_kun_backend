@@ -17,7 +17,7 @@ class EarningsIncentiveSheetResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'earnings_incentives' => \collect($this->earnings_incentives)
+            'earningsIncentives' => \collect($this->earnings_incentives)
         ];
     }
 }

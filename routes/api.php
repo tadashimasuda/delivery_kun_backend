@@ -55,6 +55,7 @@ Route::prefix('incentive')->group(function () {
 Route::prefix('incentive_sheets')->group(function () {
     Route::middleware('auth:api')->delete('/{id}', [EarningsIncentivesSheetController::class, 'destroy']);
     Route::middleware('auth:api')->patch('/{id}', [EarningsIncentivesSheetController::class, 'update']);
+    Route::middleware('auth:api')->get('/{id}', [EarningsIncentivesSheetController::class, 'show']);
     Route::middleware('auth:api')->post('/', [EarningsIncentivesSheetController::class, 'store']);
     Route::middleware('auth:api')->get('/', [EarningsIncentivesSheetController::class, 'index']);
 });

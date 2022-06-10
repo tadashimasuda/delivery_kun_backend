@@ -19,13 +19,24 @@ class EarningsIncentivesSheetController extends Controller
         return EarningsIncentiveSheetResource::collection($incentive_sheets);
     }
 
+    public function show(Request $request)
+    {
+        $incentive_sheet = EarningsIncentivesSheet::where('id',$request->id)->first();
+        
+        if(!$incentive_sheet){
+            return \response()->json(['message'=>'data not found'],404);
+        }
+
+        return new EarningsIncentiveSheetResource($incentive_sheet);
+    }
+
     public function store(EarningsIncentivesSheetRequest $request)
     {
         EarningsIncentivesSheet::create([
             'id' => Str::uuid(),
             'user_id' => $request->user()->id,
             'title' => $request->title,
-            'earnings_incentives' => $request->earnings_incentives
+            'earnings_incentives' => $request->earningsIncentives
         ]);
 
         return response()->json(null,201);
@@ -43,7 +54,7 @@ class EarningsIncentivesSheetController extends Controller
 
         EarningsIncentivesSheet::where('id',$request->id)->update([
             'title' => $request->title,
-            'earnings_incentives' => $request->earnings_incentives
+            'earnings_incentives' => $request->earningsIncentives
         ]);
 
         return response()->json(null,204);
