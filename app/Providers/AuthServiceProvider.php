@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\EarningsIncentivesSheet;
+use App\Policies\EarningIncentiveSheetPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
@@ -17,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Models\Model' => 'App\Policies\ModelPolicy',
         'App\Models\Status::class' => 'App\Policies\StatusPolicy::class',
         'App\Models\Order::class' => 'App\Policies\OrderPolicy::class',
+        EarningsIncentivesSheet::class => EarningIncentiveSheetPolicy::class,
     ];
 
     /**

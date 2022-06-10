@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DaysEarningsIncentiveController;
+use App\Http\Controllers\EarningsIncentivesSheetController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\UserController;
@@ -49,6 +50,14 @@ Route::middleware('auth:api')->patch('/actual_cost', [StatusController::class, '
 Route::prefix('incentive')->group(function () {
     Route::middleware('auth:api')->get('/', [DaysEarningsIncentiveController::class, 'index']);
     Route::middleware('auth:api')->post('/', [DaysEarningsIncentiveController::class, 'store']);
+});
+
+Route::prefix('incentive_sheets')->group(function () {
+    Route::middleware('auth:api')->delete('/{id}', [EarningsIncentivesSheetController::class, 'destroy']);
+    Route::middleware('auth:api')->patch('/{id}', [EarningsIncentivesSheetController::class, 'update']);
+    Route::middleware('auth:api')->get('/{id}', [EarningsIncentivesSheetController::class, 'show']);
+    Route::middleware('auth:api')->post('/', [EarningsIncentivesSheetController::class, 'store']);
+    Route::middleware('auth:api')->get('/', [EarningsIncentivesSheetController::class, 'index']);
 });
 
 Route::get('/count/users',[UserController::class,'userCount']);
