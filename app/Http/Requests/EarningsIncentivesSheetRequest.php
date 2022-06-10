@@ -20,9 +20,9 @@ class EarningsIncentivesSheetRequest extends FormRequest
     {
         return [
             'title.required' => 'タイトルを入力してください',
-            'earnings_incentives.required' => 'インセンティブを入力してください',
-            'earnings_incentives.array' => 'array型で入力してください',
-            'earnings_incentives.size' => 'インセンティブの数が足りません',
+            'earningsIncentives.required' => 'インセンティブを入力してください',
+            'earningsIncentives.array' => 'array型で入力してください',
+            'earningsIncentives.size' => 'インセンティブの数が足りません',
         ];
     }
 
@@ -35,7 +35,7 @@ class EarningsIncentivesSheetRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'earnings_incentives' => 'required|array|size:17',
+            'earningsIncentives' => 'required|array|size:17',
         ];
     }
 }
