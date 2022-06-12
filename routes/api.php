@@ -61,6 +61,7 @@ Route::prefix('incentive_sheets')->group(function () {
 });
 
 Route::prefix('announcement')->group(function () {
+    Route::middleware('auth:api')->get('/{id}', [AnnouncementController::class, 'show']);
     Route::middleware('auth:api')->get('/', [AnnouncementController::class, 'index']);
     Route::middleware('auth:api')->post('/', [AnnouncementController::class, 'store']);
 });

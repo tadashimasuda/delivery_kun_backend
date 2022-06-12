@@ -44,4 +44,12 @@ class AnnouncementController extends Controller
 
         return AnnouncementResource::collection($announcements);
     }
+
+    public function show(Request $request)
+    {
+        $announcement_id = $request->id;
+        $announcement = Announcement::find($announcement_id);
+
+        return new AnnouncementResource($announcement);
+    }
 }
