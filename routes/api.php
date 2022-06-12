@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DaysEarningsIncentiveController;
 use App\Http\Controllers\EarningsIncentivesSheetController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\UserController;
-use App\Models\Status;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,6 +58,10 @@ Route::prefix('incentive_sheets')->group(function () {
     Route::middleware('auth:api')->get('/{id}', [EarningsIncentivesSheetController::class, 'show']);
     Route::middleware('auth:api')->post('/', [EarningsIncentivesSheetController::class, 'store']);
     Route::middleware('auth:api')->get('/', [EarningsIncentivesSheetController::class, 'index']);
+});
+
+Route::prefix('announcement')->group(function () {
+    Route::middleware('auth:api')->post('/', [AnnouncementController::class, 'store']);
 });
 
 Route::get('/count/users',[UserController::class,'userCount']);
