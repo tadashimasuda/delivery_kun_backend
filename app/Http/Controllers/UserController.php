@@ -146,4 +146,19 @@ class UserController extends Controller
             'userCount' => $user_count
         ]);
     }
+
+    public function destroy(Request $request)
+    {
+        $user_id = $request->user()->id;
+
+        $user = User::find($user_id);
+
+        if(!$user){
+            return response()->json(['message' => 'This user not Found'],404);
+        }
+
+        $user->delete();
+
+        return response()->json(null,204);
+    }
 }

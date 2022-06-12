@@ -30,6 +30,7 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/OAuth', [UserController::class, 'OAuthLogin']);
 
 Route::prefix('user')->group(function () {
+    Route::middleware('auth:api')->delete('/',[UserController::class,'destroy']);
     Route::middleware('auth:api')->patch('/update', [UserController::class, 'update']);
     Route::middleware('auth:api')->get('/', [UserController::class, 'user']);
 });
