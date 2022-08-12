@@ -14,11 +14,13 @@ class OrderResource extends JsonResource
      */
     public function toArray($request)
     {
-        return[
+        return [
             'id' => $this->id,
             'prefecture_id' => $this->prefecture_id,
             'earnings_incentive' => $this->earnings_incentive,
             'earnings_base' => $this->earnings_base,
+            'earnings_distance_base' => $this->earnings_distance_base,
+            'earnings_distance_base_type' => $this->earnings_distance_base_type,
             'earnings_total' => $this->earnings_total,
             'order_received_at' => $this->order_received_at,
         ];
