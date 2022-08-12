@@ -24,6 +24,7 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
+            'distance_type' => 'required|int',
             'sheetId' => 'required'
         ];
     }

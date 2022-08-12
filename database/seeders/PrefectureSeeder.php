@@ -57,7 +57,7 @@ class PrefectureSeeder extends Seeder
         "鹿児島県",
         "沖縄県"
     ];
-    private $prefectures_660 = [
+    private $prefectures_550 = [
         "北海道",
         "青森県",
         "岩手県",
@@ -109,24 +109,24 @@ class PrefectureSeeder extends Seeder
     public function run()
     {
         foreach ($this->prefectures as $prefecture) {
-            if(in_array($prefecture,$this->prefectures_660)){
-                DB::table("prefectures")->insert([
-                    "prefecture" => $prefecture,
-                    "earnings_base" => 660,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
-                ]);
-            }else if($prefecture == '沖縄県'){
+            if (in_array($prefecture, $this->prefectures_550)) {
                 DB::table("prefectures")->insert([
                     "prefecture" => $prefecture,
                     "earnings_base" => 550,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
-            }else{
+            } else if ($prefecture == '沖縄県') {
                 DB::table("prefectures")->insert([
                     "prefecture" => $prefecture,
-                    "earnings_base" => 715,
+                    "earnings_base" => 550,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
+            } else {
+                DB::table("prefectures")->insert([
+                    "prefecture" => $prefecture,
+                    "earnings_base" => 600,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
