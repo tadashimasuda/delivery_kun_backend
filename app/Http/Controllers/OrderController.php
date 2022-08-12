@@ -62,13 +62,14 @@ class OrderController extends Controller
             $earnings_distance_base = $distance_pattern3[$distance_type];
         }
 
-        DB::transaction(function () use ($user_id, $earnings_base, $earnings_distance_base, $earnings_incentive, $prefecture_id, $request, $status_controller) {
+        DB::transaction(function () use ($user_id, $earnings_base, $earnings_distance_base, $distance_type, $earnings_incentive, $prefecture_id, $request, $status_controller) {
             $earnings_total = $earnings_incentive * ($earnings_base + $earnings_distance_base);
 
             OrderDemaecan::create([
                 'user_id' => $user_id,
                 'earnings_base' => $earnings_base,
                 'earnings_distance_base' => $earnings_distance_base,
+                'earnings_distance_base_type' => $distance_type,
                 'earnings_total' => $earnings_total,
                 'earnings_incentive' => $earnings_incentive,
                 'prefecture_id' => $prefecture_id,
