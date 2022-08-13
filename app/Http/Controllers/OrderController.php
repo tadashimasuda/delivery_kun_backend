@@ -116,11 +116,14 @@ class OrderController extends Controller
     public function update(OrderUpdateRequest $request)
     {
         $user_id = $request->user()->id;
+        $prefecture_id = $request->user()->prefecture_id;
         $order_id = $request->id;
         $earnings_base = $request->earnings_base;
+        $earnings_distance_base_type = $request->earnings_distance_base_type;
         $earnings_incentive = $request->earnings_incentive;
         $earnings_total = $earnings_base * $earnings_incentive;
         $update_created_at = new Carbon($request->update_date_time);
+        $earnings_distance_base = 0;
 
         $order = OrderDemaecan::find($order_id);
 
@@ -135,11 +138,28 @@ class OrderController extends Controller
         $created_at = $order->created_at;
         $status_controller = app()->make('App\Http\Controllers\StatusController');
 
-        DB::transaction(function () use ($order_id, $created_at, $earnings_incentive, $earnings_base, $earnings_total, $update_created_at, $user_id, $status_controller) {
+        $distance_pattern1 = [0, 60, 150, 270]; //tokyo,saitama,chiba,kanagawa
+        $distance_pattern2 = [0, 50, 120, 220]; //okinawa
+        $distance_pattern3 = [0, 50, 120, 220]; //other
+
+        if ($earnings_distance_base_type) {
+            if ($prefecture_id == 11 || 12 || 13 || 14) {
+                $earnings_distance_base = $distance_pattern1[$earnings_distance_base_type];
+            } else if ($prefecture_id == 47) {
+                $earnings_distance_base = $distance_pattern2[$earnings_distance_base_type];
+            } else {
+                $earnings_distance_base = $distance_pattern3[$earnings_distance_base_type];
+            }
+            $earnings_total = ($earnings_base + $earnings_distance_base) * $earnings_incentive;
+        }
+
+        DB::transaction(function () use ($order_id, $created_at, $earnings_incentive, $earnings_distance_base, $earnings_base, $earnings_distance_base_type, $earnings_total, $update_created_at, $user_id, $status_controller) {
 
             OrderDemaecan::find($order_id)->update([
                 'earnings_base' => $earnings_base,
                 'earnings_incentive' => $earnings_incentive,
+                'earnings_distance_base' => $earnings_distance_base,
+                'earnings_distance_base_type' => $earnings_distance_base_type,
                 'earnings_total' => $earnings_total,
                 'order_received_at' => $update_created_at
             ]);
