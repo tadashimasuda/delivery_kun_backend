@@ -26,6 +26,7 @@ class OrderUpdateRequest extends FormRequest
         return [
             'earnings_base' => 'required',
             'earnings_incentive' => 'required',
+            'earnings_distance_base_type' => 'int',
             'update_date_time' => 'required'
         ];
     }
