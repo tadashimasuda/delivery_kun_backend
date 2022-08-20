@@ -143,7 +143,7 @@ class OrderController extends Controller
         $distance_pattern3 = [0, 50, 120, 220]; //other
 
         if ($earnings_distance_base_type) {
-            if ($prefecture_id == 11 || 12 || 13 || 14) {
+            if ($prefecture_id == 11 || $prefecture_id == 12 || $prefecture_id ==13 || $prefecture_id == 14) {
                 $earnings_distance_base = $distance_pattern1[$earnings_distance_base_type];
             } else if ($prefecture_id == 47) {
                 $earnings_distance_base = $distance_pattern2[$earnings_distance_base_type];
