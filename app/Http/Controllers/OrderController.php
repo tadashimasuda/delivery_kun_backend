@@ -54,7 +54,7 @@ class OrderController extends Controller
             $earnings_base = $earnings_base_controller->get_earningsBase($user->id);
         }
 
-        if ($prefecture_id == 11 || 12 || 13 || 14) {
+        if ($prefecture_id == 11 || $prefecture_id == 12 || $prefecture_id == 13 || $prefecture_id == 14) {
             $earnings_distance_base = $distance_pattern1[$distance_type];
         } else if ($prefecture_id == 47) {
             $earnings_distance_base = $distance_pattern2[$distance_type];
